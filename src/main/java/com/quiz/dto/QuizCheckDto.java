@@ -1,7 +1,6 @@
 package com.quiz.dto;
 
 import com.quiz.entities.StatusType;
-import com.quiz.service.QuestionService;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 

@@ -13,7 +13,6 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
-import java.util.Objects;
 
 import static com.quiz.dao.mapper.AchievementMapper.*;
 import static com.quiz.dao.mapper.AchievementMapper.ACHIEVEMENT_CATEGORY_ID;

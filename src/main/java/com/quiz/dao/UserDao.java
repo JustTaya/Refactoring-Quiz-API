@@ -3,7 +3,6 @@ package com.quiz.dao;
 import static com.quiz.dao.mapper.UserMapper.*;
 
 import com.quiz.dao.mapper.AdminUserMapper;
-import com.quiz.dao.mapper.QuizMapper;
 import com.quiz.dao.mapper.UserMapper;
 import com.quiz.entities.*;
 import com.quiz.exceptions.DatabaseException;
@@ -13,9 +12,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.multipart.MultipartFile;
 
-import java.io.*;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;

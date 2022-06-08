@@ -1,6 +1,5 @@
 package com.quiz.controllers;
 
-import com.quiz.dto.QuestionDto;
 import com.quiz.entities.Question;
 import com.quiz.entities.ResponseText;
 import com.quiz.service.QuestionService;
@@ -8,7 +7,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.util.Base64;
 import java.util.List;

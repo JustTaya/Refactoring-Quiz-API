@@ -1,6 +1,5 @@
 package com.quiz.controllers;
 
-import com.quiz.dto.AnswerDto;
 import com.quiz.entities.Answer;
 import com.quiz.entities.ResponseText;
 import com.quiz.service.AnswerService;

@@ -4,14 +4,12 @@ import com.quiz.dao.mapper.AnswerMapper;
 import com.quiz.dto.AnswerDto;
 import com.quiz.entities.Answer;
 import com.quiz.exceptions.DatabaseException;
-import com.quiz.service.StoreFileService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;

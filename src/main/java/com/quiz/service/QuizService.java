@@ -6,7 +6,6 @@ import com.quiz.entities.Quiz;
 import com.quiz.entities.RejectMessage;
 import com.quiz.entities.StatusType;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.List;

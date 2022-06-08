@@ -2,13 +2,11 @@ package com.quiz.service;
 
 import com.quiz.dao.AnswerDao;
 import com.quiz.dao.QuestionDao;
-import com.quiz.dto.QuestionDto;
 import com.quiz.entities.Answer;
 import com.quiz.entities.Question;
 import com.quiz.entities.QuestionType;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.util.Collections;
 import java.util.List;

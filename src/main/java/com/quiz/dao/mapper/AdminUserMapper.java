@@ -1,7 +1,5 @@
 package com.quiz.dao.mapper;
 
-import com.quiz.entities.Gender;
-import com.quiz.entities.NotificationStatus;
 import com.quiz.entities.Role;
 import com.quiz.entities.User;
 import org.springframework.jdbc.core.RowMapper;

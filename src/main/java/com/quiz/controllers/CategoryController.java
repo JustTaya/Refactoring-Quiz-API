@@ -1,6 +1,5 @@
 package com.quiz.controllers;
 
-import com.quiz.entities.Answer;
 import com.quiz.entities.Category;
 import com.quiz.service.CategoryService;
 import lombok.RequiredArgsConstructor;
