@@ -60,9 +60,9 @@ public class ProfileController {
         return ResponseEntity.ok(new ResponcePaginatedList<>(paginationService.paginate(friends, pageSize, pageNumber), friends.size()));
     }
 
-    @GetMapping("/adminUsers/{pageSize}/{pageNumber}/{userId}")
+    @GetMapping("/adminUsers/{pageSize}/{pageNumber}")
     public ResponseEntity<ResponcePaginatedList<User>> getAdminUsers(@PathVariable int pageSize, @PathVariable int pageNumber, @PathVariable int userId) {
-        List<User> users = userRepo.findAdminsUsers(userId);
+        List<User> users = userRepo.findAdminsUsers();
         return ResponseEntity.ok(new ResponcePaginatedList<User>(paginationService.paginate(users, pageSize, pageNumber), users.size()));
     }
 

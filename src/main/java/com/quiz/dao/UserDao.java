@@ -119,11 +119,6 @@ public class UserDao {
 
     @Transactional
     public User insert(User entity) {
-        SimpleJdbcInsert simpleJdbcInsert = new SimpleJdbcInsert(jdbcTemplate.getDataSource())
-                .withTableName(TABLE_USERS)
-                .usingGeneratedKeyColumns(UserMapper.USERS_ID);
-
-
         Map<String, Object> parameters = new HashMap<>();
         parameters.put(UserMapper.USERS_ID, entity.getId());
         parameters.put(UserMapper.USERS_EMAIL, entity.getEmail());
@@ -187,7 +182,7 @@ public class UserDao {
         return friends;
     }
 
-    public List<User> findAdminsUsers(int userId) {
+    public List<User> findAdminsUsers() {
         List<User> adminsUsers = jdbcTemplate.query(FIND_ADMINS_USERS, new AdminUserMapper());
 
         if (adminsUsers.isEmpty()) {
@@ -195,7 +190,7 @@ public class UserDao {
         }
         return adminsUsers;
     }
-    public List<User> getUsersByRoleStatus(String role, String status, int userId) {
+    public List<User> getUsersByRoleStatus(String role, String status) {
         boolean activeStatus;
         if(status.equals("ACTIVE")){
             activeStatus = true;

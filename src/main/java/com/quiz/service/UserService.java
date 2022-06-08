@@ -101,15 +101,15 @@ public class UserService {
     public boolean changeNotificationStatus(String status, int userId) {
         return userDao.updateNotificationStatus(status, userId);
     }
-    public List<User> findAdminsUsers(int userId){
-        return userDao.findAdminsUsers(userId);
+    public List<User> findAdminsUsers(){
+        return userDao.findAdminsUsers();
     }
     public List<User> findUsersByRoleStatus(String role, String status, int userId) {
 
-        if(status.equals("AllStatus") && role.equals("AllRole")){ return userDao.findAdminsUsers(userId);}
+        if(status.equals("AllStatus") && role.equals("AllRole")){ return userDao.findAdminsUsers();}
         if(status.equals("AllStatus") && !role.equals("AllRole")){ return userDao.getUsersByRole(role,userId);}
         if(!status.equals("AllStatus") && role.equals("AllRole")){ return userDao.getUsersByStatus(status,userId);}
-        return userDao.getUsersByRoleStatus(role,status,userId);
+        return userDao.getUsersByRoleStatus(role,status);
     }
     public List<User> getUsersByFilter(String searchByUser, int userId) {
         return userDao.getUsersByFilter(searchByUser, userId);
