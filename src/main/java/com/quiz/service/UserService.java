@@ -29,31 +29,34 @@ public class UserService {
     private final UserDao userDao;
     private final PasswordEncoder passwordEncoder;
 
+    private static final String ALL_STATUS = "AllStatus";
+    private static final String ALL_ROLE = "AllRole";
+
     public User findByEmail(String email) {
-        User userdb = userDao.findByEmail(email);
-        if (userdb == null) {
+        User userDB = userDao.findByEmail(email);
+        if (userDB == null) {
             throw new NotFoundException("user", "email", email);
         }
-        return userdb;
+        return userDB;
     }
 
     public UserDto addAdminUser(User user) {
-        User userdb =userDao.findByEmail(user.getEmail());
-        if(userdb != null){
+        User userDB = userDao.findByEmail(user.getEmail());
+        if (userDB != null) {
             throw new EmailExistException("User with this email already exist");
         }
         user.setRole(user.getRole());
         user.setPassword(UUID.randomUUID().toString());
         userDao.insert(user);
 
-        if(!StringUtils.isEmpty(user.getEmail())){
+        if (!StringUtils.isEmpty(user.getEmail())) {
             String message = String.format(
-              "Dear,%s \n" +
-                      "Welcome to Quizer. Visit:" + urlPath +"activate/%s",
+                    "Dear,%s%n Welcome to Quizer. Visit: %s to activate/%s",
                     user.getEmail(),
+                    urlPath,
                     user.getPassword()
             );
-            mailSender.send(user.getEmail(),"Activation code",message);
+            mailSender.send(user.getEmail(), "Activation code", message);
         }
         return new UserDto(user);
     }
@@ -86,7 +89,8 @@ public class UserService {
     public int getUserIdByEmail(String email) {
         return userDao.getUserIdByEmail(email);
     }
-    public String getUserRoleByEmail(String email){
+
+    public String getUserRoleByEmail(String email) {
         return userDao.getUserRoleByEmail(email);
     }
 
@@ -101,25 +105,31 @@ public class UserService {
     public boolean changeNotificationStatus(String status, int userId) {
         return userDao.updateNotificationStatus(status, userId);
     }
-    public List<User> findAdminsUsers(){
+
+    public List<User> findAdminsUsers() {
         return userDao.findAdminsUsers();
     }
+
     public List<User> findUsersByRoleStatus(String role, String status, int userId) {
 
-        if(status.equals("AllStatus") && role.equals("AllRole")){ return userDao.findAdminsUsers();}
-        if(status.equals("AllStatus") && !role.equals("AllRole")){ return userDao.getUsersByRole(role,userId);}
-        if(!status.equals("AllStatus") && role.equals("AllRole")){ return userDao.getUsersByStatus(status,userId);}
+        if(status.equals(ALL_STATUS) && role.equals(ALL_ROLE)){ return userDao.findAdminsUsers();}
+        if(status.equals(ALL_STATUS) && !role.equals(ALL_ROLE)){ return userDao.getUsersByRole(role,userId);}
+        if(!status.equals(ALL_STATUS) && role.equals(ALL_ROLE)){ return userDao.getUsersByStatus(status,userId);}
         return userDao.getUsersByRoleStatus(role,status);
     }
+
     public List<User> getUsersByFilter(String searchByUser, int userId) {
         return userDao.getUsersByFilter(searchByUser, userId);
     }
 
-    public void deleteUserById(int id) { userDao.deleteUserById(id); }
+    public void deleteUserById(int id) {
+        userDao.deleteUserById(id);
+    }
 
     public NotificationStatus getNotificationStatus(int userId) {
         return userDao.getUserNotification(userId);
     }
+
     public Integer getRatingByUser(int userId) {
         return userDao.getRatingByUser(userId);
     }
@@ -138,7 +148,7 @@ public class UserService {
 
     public boolean activateUser(String code) {
         User user = userDao.findByActivationCode(code);
-        if(user == null){
+        if (user == null) {
             return false;
         }
         user.setPassword(null);
@@ -147,7 +157,7 @@ public class UserService {
     }
 
     public User findByPassword(String code) {
-       return userDao.findByActivationCode(code);
+        return userDao.findByActivationCode(code);
     }
 }
 
