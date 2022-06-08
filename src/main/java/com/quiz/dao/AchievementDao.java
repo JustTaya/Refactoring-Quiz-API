@@ -7,6 +7,7 @@ import com.quiz.entities.Achievement;
 import com.quiz.entities.AchievementCategory;
 import com.quiz.entities.UserAchievement;
 import com.quiz.exceptions.DatabaseException;
+import java.util.Collections;
 import lombok.RequiredArgsConstructor;
 import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -34,7 +35,7 @@ public class AchievementDao {
     public List<AchievementCategory> getAchievementCategories() {
         List<AchievementCategory> achievementCategories = jdbcTemplate.query(GET_ACHIEVEMENT_CATEGORIES, new AchievementCategoryMapper());
         if (achievementCategories.isEmpty()) {
-            return null;
+            return Collections.emptyList();
         }
         return achievementCategories;
     }
@@ -51,7 +52,7 @@ public class AchievementDao {
             return achievement;
         });
         if (achievements.isEmpty()) {
-            return null;
+            return Collections.emptyList();
         }
         return achievements;
     }
@@ -68,7 +69,7 @@ public class AchievementDao {
             return achievement;
         });
         if (achievements.isEmpty()) {
-            return null;
+            return Collections.emptyList();
         }
         return achievements;
     }
@@ -76,7 +77,7 @@ public class AchievementDao {
     public List<Achievement> getAchievementsByUser(int userId) {
         List<Achievement> achievements = jdbcTemplate.query(GET_ACHIEVEMENTS_BY_USER, new Object[]{userId}, new AchievementMapper());
         if (achievements.isEmpty()) {
-            return null;
+            return Collections.emptyList();
         }
         return achievements;
     }

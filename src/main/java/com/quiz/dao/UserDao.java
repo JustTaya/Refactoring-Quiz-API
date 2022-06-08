@@ -6,6 +6,8 @@ import com.quiz.dao.mapper.AdminUserMapper;
 import com.quiz.dao.mapper.UserMapper;
 import com.quiz.entities.*;
 import com.quiz.exceptions.DatabaseException;
+import java.util.Collections;
+import java.util.Collections;
 import lombok.RequiredArgsConstructor;
 import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -179,7 +181,7 @@ public class UserDao {
                 });
 
         if (friends.isEmpty()) {
-            return null;
+            return Collections.emptyList();
         }
 
         return friends;
@@ -189,7 +191,7 @@ public class UserDao {
         List<User> adminsUsers = jdbcTemplate.query(FIND_ADMINS_USERS, new AdminUserMapper());
 
         if (adminsUsers.isEmpty()) {
-            return null;
+            return Collections.emptyList();
         }
         return adminsUsers;
     }
@@ -203,14 +205,14 @@ public class UserDao {
         }
         List<User> usersByRoleStatus = jdbcTemplate.query(GET_USER_BY_ROLE_STATUS, new Object[]{role,activeStatus}, new AdminUserMapper());
         if (usersByRoleStatus.isEmpty()) {
-            return null;
+            return Collections.emptyList();
         }
         return usersByRoleStatus;
     }
     public List<User> getUsersByRole(String role, int userId) {
         List<User> usersByRoleStatus = jdbcTemplate.query(GET_USER_BY_ROLE, new Object[]{role}, new AdminUserMapper());
         if (usersByRoleStatus.isEmpty()) {
-            return null;
+            return Collections.emptyList();
         }
         return usersByRoleStatus;
     }
@@ -224,7 +226,7 @@ public class UserDao {
         }
         List<User> usersByRoleStatus = jdbcTemplate.query(GET_USER_BY_STATUS, new Object[]{activeStatus}, new AdminUserMapper());
         if (usersByRoleStatus.isEmpty()) {
-            return null;
+            return Collections.emptyList();
         }
         return usersByRoleStatus;
     }
@@ -235,7 +237,7 @@ public class UserDao {
                 new AdminUserMapper());
 
         if (getFilteredUsers.isEmpty()) {
-            return null;
+            return Collections.emptyList();
         }
         getFilteredUsers = getFilteredUsers.stream().distinct().collect(Collectors.toList());
         return getFilteredUsers;
