@@ -7,7 +7,7 @@ import com.quiz.dao.mapper.UserMapper;
 import com.quiz.entities.*;
 import com.quiz.exceptions.DatabaseException;
 import java.util.Collections;
-import java.util.Collections;
+
 import lombok.RequiredArgsConstructor;
 import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
