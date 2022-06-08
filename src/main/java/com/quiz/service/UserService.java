@@ -113,8 +113,8 @@ public class UserService {
     public List<User> findUsersByRoleStatus(String role, String status, int userId) {
 
         if(status.equals(ALL_STATUS) && role.equals(ALL_ROLE)){ return userDao.findAdminsUsers();}
-        if(status.equals(ALL_STATUS) && !role.equals(ALL_ROLE)){ return userDao.getUsersByRole(role,userId);}
-        if(!status.equals(ALL_STATUS) && role.equals(ALL_ROLE)){ return userDao.getUsersByStatus(status,userId);}
+        if(status.equals(ALL_STATUS)){ return userDao.getUsersByRole(role,userId);}
+        if(role.equals(ALL_ROLE)){ return userDao.getUsersByStatus(status,userId);}
         return userDao.getUsersByRoleStatus(role,status);
     }
 
