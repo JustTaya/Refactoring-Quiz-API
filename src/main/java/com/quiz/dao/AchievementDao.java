@@ -83,13 +83,11 @@ public class AchievementDao {
     }
 
     public Integer countAchievementsTotal() {
-        Integer count = jdbcTemplate.queryForObject(COUNT_TOTAL_ACHIEVEMENTS, Integer.class);
-        return count;
+        return jdbcTemplate.queryForObject(COUNT_TOTAL_ACHIEVEMENTS, Integer.class);
     }
 
     public Integer countAchievementsForUser(int userId) {
-        Integer count = jdbcTemplate.queryForObject(COUNT_ACHIEVEMENTS_OF_USER, new Object[]{userId}, Integer.class);
-        return count;
+        return jdbcTemplate.queryForObject(COUNT_ACHIEVEMENTS_OF_USER, new Object[]{userId}, Integer.class);
     }
 
     public UserAchievement getProgress(int userId, int achievementId) {
