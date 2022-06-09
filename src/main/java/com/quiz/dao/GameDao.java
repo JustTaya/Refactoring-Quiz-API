@@ -13,6 +13,7 @@ import org.springframework.stereotype.Repository;
 import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.time.LocalDate;
+import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
@@ -24,10 +25,10 @@ import java.util.TreeSet;
 public class GameDao {
     private final JdbcTemplate jdbcTemplate;
 
-    private final static String LIMIT_OFFSET = " LIMIT ? OFFSET ? ";
-    private final static String INSERT_GAME = "INSERT INTO games (quiz_id, host_id, question_timer, date, max_users_number) VALUES (?, ?, ?, ?, ?)";
-    private final static String GET_PLAYER_LIMIT = "SELECT max_users_number FROM games WHERE id =?";
-    private final static String SAVE_SCORE = "INSERT INTO score (user_id, game_id, score) VALUES (?, ?, ?)";
+    private static final String LIMIT_OFFSET = " LIMIT ? OFFSET ? ";
+    private static final String INSERT_GAME = "INSERT INTO games (quiz_id, host_id, question_timer, date, max_users_number) VALUES (?, ?, ?, ?, ?)";
+    private static final String GET_PLAYER_LIMIT = "SELECT max_users_number FROM games WHERE id =?";
+    private static final String SAVE_SCORE = "INSERT INTO score (user_id, game_id, score) VALUES (?, ?, ?)";
 
     private static final String GET_GAME = "SELECT quiz_id, host_id, question_timer,max_users_number FROM games WHERE id = ?";
     private static final String GET_GAMES_BY_USER_ID = "SELECT games.id, quizzes.name, games.date, score FROM score " +
@@ -47,7 +48,7 @@ public class GameDao {
             "INNER JOIN quizzes ON quizzes.id = games.quiz_id " +
             "WHERE user_id = ? AND ((quizzes.name ~* ?) OR (games.date::text  ~* ?) OR (score::text   ~* ?))";
 
-    public int insertGame(int quizId, int hostId, int questionTimer, int max_users_number) {
+    public int insertGame(int quizId, int hostId, int questionTimer, int maxUsersNumber) {
         KeyHolder keyHolder = new GeneratedKeyHolder();
 
         jdbcTemplate.update(
@@ -57,7 +58,7 @@ public class GameDao {
                     ps.setInt(2, hostId);
                     ps.setInt(3, questionTimer);
                     ps.setDate(4, Date.valueOf(LocalDate.now()));
-                    ps.setInt(5, max_users_number);
+                    ps.setInt(5, maxUsersNumber);
                     return ps;
                 }, keyHolder);
 
@@ -88,7 +89,7 @@ public class GameDao {
                         resultSet.getInt("score"))));
 
         if (gameDtos.isEmpty()) {
-            return null;
+            return Collections.emptyList();
         }
 
         return gameDtos;
@@ -104,7 +105,7 @@ public class GameDao {
                         resultSet.getInt("score"))));
 
         if (gameDtos.isEmpty()) {
-            return null;
+            return Collections.emptyList();
         }
 
         return gameDtos;

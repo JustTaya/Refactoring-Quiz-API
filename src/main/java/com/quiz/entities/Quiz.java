@@ -15,7 +15,7 @@ public class Quiz {
     private String name;
     private String image;
     private int author;
-    private int category_id;
+    private int categoryId;
     private Date date;
     private String description;
     private StatusType status;

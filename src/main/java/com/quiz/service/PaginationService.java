@@ -8,7 +8,7 @@ import java.util.List;
 @Service
 public class PaginationService {
     public <T> List<T> paginate(List<T> listForPagination, int pageSize, int pageNumber){
-        PagedListHolder<T> pageToReturn = new PagedListHolder<T>(listForPagination);
+        PagedListHolder<T> pageToReturn = new PagedListHolder<>(listForPagination);
         pageToReturn.setPage(pageNumber);
         pageToReturn.setPageSize(pageSize);
 

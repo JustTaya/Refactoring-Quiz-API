@@ -41,7 +41,7 @@ public class UserMapper implements RowMapper<User> {
         user.setSurname(resultSet.getString(USERS_SURNAME));
         user.setBirthdate(resultSet.getDate(USERS_BIRTHDATE));
         user.setGender(Gender.valueOf(resultSet.getString(USERS_GENDER)));
-        user.setCountry_id(resultSet.getInt(USERS_COUNTRY_ID));
+        user.setCountryId(resultSet.getInt(USERS_COUNTRY_ID));
         user.setCity(resultSet.getString(USERS_CITY));
         user.setRating(resultSet.getInt(USERS_RATING));
         user.setAbout(resultSet.getString(USERS_ABOUT));

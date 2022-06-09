@@ -36,12 +36,12 @@ public class ProfileController {
     @Autowired
     GameDao gameDao;
 
-    @GetMapping("/myprofile/{userId}")
+    @GetMapping("/{userId}")
     public ResponseEntity<User> getUserProfile(@PathVariable int userId) {
         return ResponseEntity.status(HttpStatus.OK).body(userRepo.findProfileInfoByUserId(userId));
     }
 
-    @GetMapping("/myfriends/{pageSize}/{pageNumber}/{userId}")
+    @GetMapping("/friends/{pageSize}/{pageNumber}/{userId}")
     public ResponseEntity<ResponcePaginatedList<User>> getFriends(@PathVariable int pageSize,
                                                                   @PathVariable int pageNumber,
                                                                   @PathVariable int userId,
@@ -50,7 +50,7 @@ public class ProfileController {
         return ResponseEntity.ok(new ResponcePaginatedList<>(paginationService.paginate(friends, pageSize, pageNumber), friends.size()));
     }
 
-    @GetMapping("/myfriends/{userSearch}/{pageSize}/{pageNumber}/{userId}")
+    @GetMapping("/friends/{userSearch}/{pageSize}/{pageNumber}/{userId}")
     public ResponseEntity<ResponcePaginatedList<User>> getFriends(@PathVariable String userSearch,
                                                                   @PathVariable int pageSize,
                                                                   @PathVariable int pageNumber,
@@ -60,18 +60,18 @@ public class ProfileController {
         return ResponseEntity.ok(new ResponcePaginatedList<>(paginationService.paginate(friends, pageSize, pageNumber), friends.size()));
     }
 
-    @GetMapping("/adminUsers/{pageSize}/{pageNumber}")
+    @GetMapping("/admin/{pageSize}/{pageNumber}")
     public ResponseEntity<ResponcePaginatedList<User>> getAdminUsers(@PathVariable int pageSize, @PathVariable int pageNumber, @PathVariable int userId) {
         List<User> users = userRepo.findAdminsUsers();
         return ResponseEntity.ok(new ResponcePaginatedList<User>(paginationService.paginate(users, pageSize, pageNumber), users.size()));
     }
 
-    @GetMapping("/adminUsers/filter/{searchByUser}/{pageSize}/{pageNumber}/{userId}")
+    @GetMapping("/admin/filter/{searchByUser}/{pageSize}/{pageNumber}/{userId}")
     public ResponseEntity<ResponcePaginatedList<User>> getFilteredUsers(@PathVariable String searchByUser,
                                                                         @PathVariable int pageSize,
                                                                         @PathVariable int pageNumber,
                                                                         @PathVariable int userId) {
-        List<User> users = userRepo.getUsersByFilter(searchByUser, userId);
+        List<User> users = userRepo.getUsersByFilter(searchByUser);
         return ResponseEntity.ok(new ResponcePaginatedList<>(paginationService.paginate(users, pageSize, pageNumber), users.size()));
     }
 
@@ -79,9 +79,8 @@ public class ProfileController {
     public ResponseEntity<ResponcePaginatedList<User>> getUsersByRoleStatus(@PathVariable String role,
                                                                             @PathVariable String status,
                                                                             @PathVariable int pageSize,
-                                                                            @PathVariable int pageNumber,
-                                                                            @PathVariable int userId) {
-        List<User> users = userRepo.findUsersByRoleStatus(role, status, userId);
+                                                                            @PathVariable int pageNumber) {
+        List<User> users = userRepo.findUsersByRoleStatus(role, status);
         return ResponseEntity.ok(new ResponcePaginatedList<>(paginationService.paginate(users, pageSize, pageNumber), users.size()));
     }
 

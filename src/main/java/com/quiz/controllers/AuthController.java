@@ -20,7 +20,6 @@ public class AuthController {
 
     private final AuthService authService;
     private final UserService userService;
-    // TODO: 09.04.2020 validation
     @PostMapping("/register")
     public ResponseEntity<UserDto> register(@RequestBody User user){
         return ResponseEntity.status(HttpStatus.CREATED)

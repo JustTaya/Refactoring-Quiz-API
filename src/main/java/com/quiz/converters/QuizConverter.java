@@ -15,7 +15,7 @@ public class QuizConverter {
         quizDto.setId(quiz.getId());
         quizDto.setName(quiz.getName());
         quizDto.setAuthor(quiz.getAuthor());
-        quizDto.setCategory_id(quiz.getCategory_id());
+        quizDto.setCategoryId(quiz.getCategoryId());
         quizDto.setDate(quiz.getDate());
         quizDto.setDescription(quiz.getDescription());
         quizDto.setStatus(quiz.getStatus());

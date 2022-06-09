@@ -48,8 +48,7 @@ public class QuestionDao {
             }
 
         } catch (DataAccessException e) {
-            // TODO: 09.04.2020  check message
-            throw new DatabaseException(String.format("Find question by id '%s' database error occured", id));
+            throw new DatabaseException(String.format("Find question by id '%s' database error occurred", id));
         }
 
         return questions.get(0);

@@ -11,7 +11,6 @@ import java.util.Collections;
 import lombok.RequiredArgsConstructor;
 import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -20,45 +19,43 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import static com.quiz.dao.mapper.UserMapper.*;
-
 @Repository
 @RequiredArgsConstructor
 public class UserDao {
 
     private final JdbcTemplate jdbcTemplate;
-    private final static String GET_USER_ROLE_BY_EMAIL = "SELECT role FROM users WHERE email = ?";
-    private final static String USER_FIND_BY_EMAIL = "SELECT id, email, password FROM users WHERE email = ?";
-    private final static String USER_FIND_BY_ID = "SELECT id,email,name, surname,password FROM users WHERE id = ?";
-    private final static String USER_GET_ALL_FOR_PROFILE_BY_ID = "SELECT id, email, name, surname, birthdate, gender, city, about, role FROM users WHERE id = ?";
-    private final static String FIND_FRIENDS_BY_USER_ID = "SELECT id, email, name, surname, rating FROM users where id in (SELECT friend_id FROM users INNER JOIN friends ON user_id = id WHERE id = ?)";
-    private final static String FIND_FRIENDS_BY_USER_ID_ORDER_BY = "SELECT id, email, name, surname, rating FROM users where id in (SELECT friend_id FROM users INNER JOIN friends ON user_id = id WHERE id = ?)";
-    private final static String INSERT_USER = "INSERT INTO users (email, password, role) VALUES (?,?,?::role_type)";
-    private final static String UPDATE_USER = "UPDATE users  SET name = ?, surname = ?, birthdate = ?, gender = ?::gender_type, city = ?, about = ? WHERE id = ?";
-    private final static String UPDATE_USER_PASSWORD = "UPDATE users SET password = ? WHERE id = ?";
-    private final static String UPDATE_USER_IMAGE = "UPDATE users SET image = ? WHERE id = ?";
-    private final static String GET_USER_ID_BY_EMAIL = "SELECT id FROM users WHERE email = ?";
-    private final static String GET_USER_IMAGE_BY_USER_ID = "SELECT image FROM users WHERE id = ?";
-    private final static String UPDATE_NOTIFICATION_STATUS = "UPDATE users SET notifications = ?::user_notification_type WHERE id = ?";
-    private final static String GET_NOTIFICATION = "SELECT notifications from users WHERE id = ?";
-    private final static String FILTER_FRIENDS_BY_USER_ID = "SELECT id, email, name, surname, rating FROM users where (id in (SELECT friend_id FROM users INNER JOIN friends ON user_id = id WHERE id = ?)) AND (CONCAT(name, ' ', surname) ~*?  OR rating::text ~* ?)";
+    private static final String GET_USER_ROLE_BY_EMAIL = "SELECT role FROM users WHERE email = ?";
+    private static final String USER_FIND_BY_EMAIL = "SELECT id, email, password FROM users WHERE email = ?";
+    private static final String USER_FIND_BY_ID = "SELECT id,email,name, surname,password FROM users WHERE id = ?";
+    private static final String USER_GET_ALL_FOR_PROFILE_BY_ID = "SELECT id, email, name, surname, birthdate, gender, city, about, role FROM users WHERE id = ?";
+    private static final String FIND_FRIENDS_BY_USER_ID = "SELECT id, email, name, surname, rating FROM users where id in (SELECT friend_id FROM users INNER JOIN friends ON user_id = id WHERE id = ?)";
+    private static final String FIND_FRIENDS_BY_USER_ID_ORDER_BY = "SELECT id, email, name, surname, rating FROM users where id in (SELECT friend_id FROM users INNER JOIN friends ON user_id = id WHERE id = ?)";
+    private static final String INSERT_USER = "INSERT INTO users (email, password, role) VALUES (?,?,?::role_type)";
+    private static final String UPDATE_USER = "UPDATE users  SET name = ?, surname = ?, birthdate = ?, gender = ?::gender_type, city = ?, about = ? WHERE id = ?";
+    private static final String UPDATE_USER_PASSWORD = "UPDATE users SET password = ? WHERE id = ?";
+    private static final String UPDATE_USER_IMAGE = "UPDATE users SET image = ? WHERE id = ?";
+    private static final String GET_USER_ID_BY_EMAIL = "SELECT id FROM users WHERE email = ?";
+    private static final String GET_USER_IMAGE_BY_USER_ID = "SELECT image FROM users WHERE id = ?";
+    private static final String UPDATE_NOTIFICATION_STATUS = "UPDATE users SET notifications = ?::user_notification_type WHERE id = ?";
+    private static final String GET_NOTIFICATION = "SELECT notifications from users WHERE id = ?";
+    private static final String FILTER_FRIENDS_BY_USER_ID = "SELECT id, email, name, surname, rating FROM users where (id in (SELECT friend_id FROM users INNER JOIN friends ON user_id = id WHERE id = ?)) AND (CONCAT(name, ' ', surname) ~*?  OR rating::text ~* ?)";
 
-    private final static String INSERT_GAME_SCORE = "INSERT INTO score (user_id, game_id, score) VALUES(?, ?, ?)";
+    private static final String INSERT_GAME_SCORE = "INSERT INTO score (user_id, game_id, score) VALUES(?, ?, ?)";
 
-    private final static String GET_RATING_BY_USER_ID = "SELECT rowNumb FROM (SELECT id, ROW_NUMBER() OVER (ORDER BY rating DESC) AS rowNumb FROM users) AS irN WHERE id=?";
-    private final static String GET_RATING = "SELECT id, name, surname, rating, ROW_NUMBER() OVER (ORDER BY rating DESC) AS rowNumb FROM users LIMIT ? OFFSET ?";
+    private static final String GET_RATING_BY_USER_ID = "SELECT rowNumb FROM (SELECT id, ROW_NUMBER() OVER (ORDER BY rating DESC) AS rowNumb FROM users) AS irN WHERE id=?";
+    private static final String GET_RATING = "SELECT id, name, surname, rating, ROW_NUMBER() OVER (ORDER BY rating DESC) AS rowNumb FROM users LIMIT ? OFFSET ?";
     private static final String GET_RATING_IN_RANGE = "WITH numbereduserstable AS (SELECT id, name, surname, rating, ROW_NUMBER() OVER (ORDER BY rating DESC) AS row_number FROM users), current AS (SELECT row_number FROM numbereduserstable WHERE id = ?) SELECT numbereduserstable.* FROM numbereduserstable, current WHERE ABS(numbereduserstable.row_number - current.row_number) <= ? ORDER BY numbereduserstable.row_number";
     public static final String TABLE_USERS = "users";
-    private final static String UPDATE_USER_ACTIVE_STATUS = "UPDATE users SET active= NOT active WHERE id = ?";
-    private final static String FIND_ADMINS_USERS = "SELECT id,email,name,surname,role,active FROM users WHERE role = 'ADMIN' OR role = 'MODERATOR' OR role = 'SUPER_ADMIN'";
-    private final static String DELETE_USER="DELETE FROM users WHERE id = ?";
-    private final static String GET_USER_BY_ROLE="SELECT id,email, name,surname,role,active FROM users WHERE role = CAST(? AS role_type)";
-    private final static String GET_USER_BY_ROLE_STATUS="SELECT id,email, name,surname,role,active FROM users WHERE role = CAST(? AS role_type) AND active = ?";
-    private final static String GET_USER_BY_STATUS="SELECT id,email, name,surname,role,active FROM users WHERE active = ? AND NOT role='USER'";
-    private final static String GET_FILTERED_USERS = "SELECT id,email,name,surname,role,active FROM users WHERE name ~* ? OR email ~* ? OR CONCAT(name, ' ', surname) ~*? OR surname ~* ?";
+    private static final String UPDATE_USER_ACTIVE_STATUS = "UPDATE users SET active= NOT active WHERE id = ?";
+    private static final String FIND_ADMINS_USERS = "SELECT id,email,name,surname,role,active FROM users WHERE role = 'ADMIN' OR role = 'MODERATOR' OR role = 'SUPER_ADMIN'";
+    private static final String DELETE_USER="DELETE FROM users WHERE id = ?";
+    private static final String GET_USER_BY_ROLE="SELECT id,email, name,surname,role,active FROM users WHERE role = CAST(? AS role_type)";
+    private static final String GET_USER_BY_ROLE_STATUS="SELECT id,email, name,surname,role,active FROM users WHERE role = CAST(? AS role_type) AND active = ?";
+    private static final String GET_USER_BY_STATUS="SELECT id,email, name,surname,role,active FROM users WHERE active = ? AND NOT role='USER'";
+    private static final String GET_FILTERED_USERS = "SELECT id,email,name,surname,role,active FROM users WHERE name ~* ? OR email ~* ? OR CONCAT(name, ' ', surname) ~*? OR surname ~* ?";
 
 
-    private final static String USER_FIND_BY_PASSWORD ="SELECT id,email, name,surname,role,active FROM users WHERE password = ?"; ;
+    private static final String USER_FIND_BY_PASSWORD ="SELECT id,email, name,surname,role,active FROM users WHERE password = ?"; ;
 
 
 
@@ -204,14 +201,14 @@ public class UserDao {
         }
         return usersByRoleStatus;
     }
-    public List<User> getUsersByRole(String role, int userId) {
+    public List<User> getUsersByRole(String role) {
         List<User> usersByRoleStatus = jdbcTemplate.query(GET_USER_BY_ROLE, new Object[]{role}, new AdminUserMapper());
         if (usersByRoleStatus.isEmpty()) {
             return Collections.emptyList();
         }
         return usersByRoleStatus;
     }
-    public List<User> getUsersByStatus(String status, int userId) {
+    public List<User> getUsersByStatus(String status) {
         boolean activeStatus;
         if(status.equals("ACTIVE")){
             activeStatus = true;
@@ -225,7 +222,7 @@ public class UserDao {
         }
         return usersByRoleStatus;
     }
-    public List<User> getUsersByFilter(String searchByUser, int userId) {
+    public List<User> getUsersByFilter(String searchByUser) {
         List<User> getFilteredUsers = jdbcTemplate.query(
                 GET_FILTERED_USERS,
                 new Object[]{searchByUser, searchByUser, searchByUser, searchByUser},

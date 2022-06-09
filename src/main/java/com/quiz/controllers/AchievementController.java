@@ -33,12 +33,12 @@ public class AchievementController {
         return ResponseEntity.ok(achievementService.getAchievementCategories());
     }
 
-    @GetMapping("/by_category/{categoryId}")
+    @GetMapping("/categories/{categoryId}")
     public ResponseEntity<List<Achievement>> getAchievementCategories(@PathVariable int categoryId) {
         return ResponseEntity.ok(achievementService.findAchievementByCategory(categoryId));
     }
 
-    @GetMapping("/count_total")
+    @GetMapping("/count/total")
     public ResponseEntity<Integer> countAchievementsTotal() {
         return ResponseEntity.ok(achievementService.countAchievementsTotal());
     }

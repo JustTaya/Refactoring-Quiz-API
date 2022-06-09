@@ -11,6 +11,7 @@ import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
 
 import java.sql.PreparedStatement;
+import java.util.Collections;
 import java.util.List;
 
 @Repository
@@ -75,7 +76,7 @@ public class TagDao {
     public List<Tag> getTagsByQuiz(int quizId) {
         List<Tag> tagsByQuiz = jdbcTemplate.query(TAGS_BY_QUIZ, new Object[]{quizId}, new TagMapper());
         if (tagsByQuiz.isEmpty()) {
-            return null;
+            return Collections.emptyList();
         }
         return tagsByQuiz;
     }

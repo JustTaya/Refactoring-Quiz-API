@@ -28,7 +28,7 @@ public class QuizMapper implements RowMapper<Quiz> {
         quiz.setName(resultSet.getString(QUIZ_NAME));
         quiz.setImage(resultSet.getString(QUIZ_IMAGE));
         quiz.setAuthor(resultSet.getInt(QUIZ_AUTHOR));
-        quiz.setCategory_id(resultSet.getInt(QUIZ_CATEGORY_ID));
+        quiz.setCategoryId(resultSet.getInt(QUIZ_CATEGORY_ID));
         quiz.setDate(resultSet.getDate(QUIZ_DATE));
         quiz.setDescription(resultSet.getString(QUIZ_DESCRIPTION));
         quiz.setStatus(StatusType.valueOf(resultSet.getString(QUIZ_STATUS)));

@@ -135,16 +135,12 @@ public class GameService {
     }
 
     private boolean isRightAnswer(String text, int questionNumber, int gameId) {
-        return this.answerDao.findById(this.currentGames.get(gameId).getQuestions().get(questionNumber).getId()).getText().toLowerCase().equals(text.toLowerCase());
+        return this.answerDao.findById(this.currentGames.get(gameId).getQuestions().get(questionNumber).getId()).getText().equalsIgnoreCase(text);
     }
 
     private boolean isRightOption(List<Answer> answers) {
-        for (Answer answer : answers) {
-            if (!this.answerDao.findById(answer.getId()).isCorrect()) {
-                return false;
-            }
-        }
-        return true;
+        return answers.stream()
+                .allMatch(answer -> this.answerDao.findById(answer.getId()).isCorrect());
     }
 
     private boolean isRightBoolean(Answer answer) {
@@ -161,10 +157,17 @@ public class GameService {
     }
 
     public void onUserDisconnection(int userId, int gameId) {
-        Player disconnectedPlayer = this.currentGames.get(gameId).getPlayerSet().stream().filter(player -> player.getUserId() == userId).findFirst().get();
-        if (!disconnectedPlayer.isAuthorize()) {
-            this.gameDao.saveScore(userId, gameId, disconnectedPlayer.getUserScore());
+        this.currentGames.get(gameId).getPlayerSet()
+                .stream()
+                .filter(player -> player.getUserId() == userId)
+                .findFirst()
+                .ifPresent(player -> saveDisconnectedPlayerResult(userId, gameId, player));
+    }
+
+    private void saveDisconnectedPlayerResult(int userId, int gameId, Player player) {
+        if (player.isAuthorize()) {
+            this.gameDao.saveScore(userId, gameId, player.getUserScore());
         }
-        this.currentGames.get(gameId).getPlayerSet().remove(disconnectedPlayer);
+        this.currentGames.get(gameId).getPlayerSet().remove(player);
     }
 }

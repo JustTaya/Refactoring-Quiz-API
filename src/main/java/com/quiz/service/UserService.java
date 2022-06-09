@@ -24,7 +24,7 @@ public class UserService {
     String urlPath;
 
     @Autowired
-    private MailSender mailSender;
+    private MailSenderService mailSenderService;
 
     private final UserDao userDao;
     private final PasswordEncoder passwordEncoder;
@@ -56,7 +56,7 @@ public class UserService {
                     urlPath,
                     user.getPassword()
             );
-            mailSender.send(user.getEmail(), "Activation code", message);
+            mailSenderService.send(user.getEmail(), "Activation code", message);
         }
         return new UserDto(user);
     }
@@ -110,16 +110,16 @@ public class UserService {
         return userDao.findAdminsUsers();
     }
 
-    public List<User> findUsersByRoleStatus(String role, String status, int userId) {
+    public List<User> findUsersByRoleStatus(String role, String status) {
 
         if(status.equals(ALL_STATUS) && role.equals(ALL_ROLE)){ return userDao.findAdminsUsers();}
-        if(status.equals(ALL_STATUS)){ return userDao.getUsersByRole(role,userId);}
-        if(role.equals(ALL_ROLE)){ return userDao.getUsersByStatus(status,userId);}
+        if(status.equals(ALL_STATUS)){ return userDao.getUsersByRole(role);}
+        if(role.equals(ALL_ROLE)){ return userDao.getUsersByStatus(status);}
         return userDao.getUsersByRoleStatus(role,status);
     }
 
-    public List<User> getUsersByFilter(String searchByUser, int userId) {
-        return userDao.getUsersByFilter(searchByUser, userId);
+    public List<User> getUsersByFilter(String searchByUser) {
+        return userDao.getUsersByFilter(searchByUser);
     }
 
     public void deleteUserById(int id) {

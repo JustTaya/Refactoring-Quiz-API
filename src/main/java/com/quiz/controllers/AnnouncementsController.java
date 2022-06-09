@@ -9,13 +9,13 @@ import java.util.List;
 
 @CrossOrigin
 @RestController
-@RequestMapping("/announce")
+@RequestMapping("/announcements")
 public class AnnouncementsController {
 
     @Autowired
     AnnouncementDao announcementDao;
 
-    @GetMapping("/dash")
+    @GetMapping
     public List<Announcement> getAnnouncement(@RequestParam(defaultValue = "0",required = false, value = "userId") int userId) {
         if (userId != 0) {
             return announcementDao.getAnnouncementsByUserId(userId);

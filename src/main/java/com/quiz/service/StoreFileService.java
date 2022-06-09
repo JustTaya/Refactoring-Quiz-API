@@ -29,9 +29,9 @@ public class StoreFileService {
             uploadDir.mkdir();
         }
 
-        Path path = Paths.get(this.path + fileName);
+        Path filePath = Paths.get(this.path + fileName);
         try {
-            Files.copy(file.getInputStream(), path, StandardCopyOption.REPLACE_EXISTING);
+            Files.copy(file.getInputStream(), filePath, StandardCopyOption.REPLACE_EXISTING);
         } catch (IOException e) {
             e.printStackTrace();
         }

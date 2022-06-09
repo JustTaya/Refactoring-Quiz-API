@@ -33,7 +33,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
         http.authorizeRequests()
                 .antMatchers("/auth/**", "/quizzes/**", "/profile/**", "/api/**", "/resources", "/image").permitAll();
-        /*                .antMatchers().authenticated();*/
         http.addFilterBefore(authFilter(), UsernamePasswordAuthenticationFilter.class);
     }
 }

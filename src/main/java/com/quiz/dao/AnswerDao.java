@@ -46,7 +46,7 @@ public class AnswerDao {
         try {
             return jdbcTemplate.queryForObject(ANSWER_FIND_BY_ID, new Object[]{id}, new AnswerMapper());
         } catch (DataAccessException e) {
-            throw new DatabaseException(String.format("Find answer by id '%s' database error occured", id));
+            throw new DatabaseException(String.format("Find answer by id '%s' database error occurred", id));
         }
     }
 

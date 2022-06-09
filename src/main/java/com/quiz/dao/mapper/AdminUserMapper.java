@@ -10,19 +10,11 @@ import java.sql.SQLException;
 public class AdminUserMapper implements RowMapper<User> {
 
     public static final String USERS_ID = "id";
-    public static final String USERS_PASSWORD = "password";
     public static final String USERS_EMAIL = "email";
     public static final String USERS_ROLE = "role";
     public static final String USERS_NAME = "name";
     public static final String USERS_SURNAME = "surname";
-    public static final String USERS_BIRTHDATE = "birthdate";
-    public static final String USERS_GENDER = "gender";
-    public static final String USERS_COUNTRY_ID = "country_id";
-    public static final String USERS_CITY = "city";
-    public static final String USERS_RATING = "rating";
-    public static final String USERS_ABOUT = "about";
     public static final String USERS_ACTIVE = "active";
-    public static final String USER_NOTIFICATIONS = "notifications";
 
     @Override
     public User mapRow(ResultSet resultSet, int rowNum) throws SQLException {

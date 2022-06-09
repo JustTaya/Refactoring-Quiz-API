@@ -23,7 +23,7 @@ public class CategoryController {
                 .body(category);
     }
 
-    @GetMapping("")
+    @GetMapping
     public ResponseEntity<List<Category>> getAllCategories() {
         List<Category> categories = categoryService.getAllCategories();
         return ResponseEntity.status(HttpStatus.CREATED)

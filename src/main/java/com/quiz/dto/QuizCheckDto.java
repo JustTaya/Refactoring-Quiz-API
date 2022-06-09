@@ -15,7 +15,7 @@ public class QuizCheckDto{
     private int id;
     private String name;
     private int author;
-    private int category_id;
+    private int categoryId;
     private Date date;
     private String description;
     private StatusType status;
@@ -26,11 +26,11 @@ public class QuizCheckDto{
     private String authorEmail;
     private List<QuestionCheckDto> questions;
 
-    public QuizCheckDto(int id, String name, int author, int category_id, Date date, String description, StatusType status, Timestamp modificationTime, String category,String authorName,String authorSurname, String authorEmail) {
+    public QuizCheckDto(int id, String name, int author, int categoryId, Date date, String description, StatusType status, Timestamp modificationTime, String category,String authorName,String authorSurname, String authorEmail) {
         this.id = id;
         this.name = name;
         this.author = author;
-        this.category_id = category_id;
+        this.categoryId = categoryId;
         this.date = date;
         this.description = description;
         this.status = status;
@@ -44,7 +44,7 @@ public class QuizCheckDto{
         this.id = quizDto.getId();
         this.name = quizDto.getName();
         this.author = quizDto.getAuthor();
-        this.category_id = quizDto.getCategory_id();
+        this.categoryId = quizDto.getCategoryId();
         this.date = quizDto.getDate();
         this.description = quizDto.getDescription();
         this.status = quizDto.getStatus();
