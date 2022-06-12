@@ -9,7 +9,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -18,10 +17,9 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 public class AuthController {
 
-
     private final AuthService authService;
     private final UserService userService;
-    // TODO: 09.04.2020 validation
+
     @PostMapping("/register")
     public ResponseEntity<UserDto> register(@RequestBody User user){
         return ResponseEntity.status(HttpStatus.CREATED)

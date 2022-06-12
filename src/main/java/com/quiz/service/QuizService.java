@@ -6,7 +6,6 @@ import com.quiz.entities.Quiz;
 import com.quiz.entities.RejectMessage;
 import com.quiz.entities.StatusType;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -24,12 +23,8 @@ public class QuizService {
         return quizDao.getModeratorQuizzes(moderatorId);
     }
 
-    public List<QuizDto> findAllQuizzes(int pageSize, int pageNumber, int userId) {
-        return quizDao.getAllQuizzes(pageSize, pageNumber, userId);
-    }
-
-    public QuizDto findQuizInfoById(int id) {
-        return quizDao.findInfoById(id);
+    public List<QuizDto> findAllQuizzes(int limit, int offset, int userId) {
+        return quizDao.getAllQuizzes(limit, offset, userId);
     }
 
     public Quiz findQuizById(int id) {
@@ -66,15 +61,6 @@ public class QuizService {
 
     public QuizDto insertQuiz(QuizDto quiz) {
         return quizDao.insert(quiz);
-    }
-
-
-    public String getCategoryNameByCategoryId(int categoryId) {
-        return quizDao.getCategoryNameByCategoryId(categoryId);
-    }
-
-    public boolean addTag(int quizId, int tagId) {
-        return quizDao.addTagToQuiz(quizId, tagId);
     }
 
     public List<Quiz> findTopPopularQuizzes(int limit) {
@@ -128,7 +114,7 @@ public class QuizService {
         return quizDao.getPendingQuizzesByFilter(searchText);
     }
 
-    public void unsignQuizById(int id) { quizDao.unsignQuizById(id); }
+    public void unsignQuizById(int id) { quizDao.unassignQuizById(id); }
 
     public List<Quiz> getRejectedQuizzesByUserId(int userId, String sort) {
         return quizDao.getRejectedQuizzesByUserId(userId, sort);
@@ -139,6 +125,6 @@ public class QuizService {
     }
 
     public void unsignAllModeratorQuizById(int moderatorId) {
-        quizDao.unsignAllQuizById(moderatorId);
+        quizDao.unassignAllQuizById(moderatorId);
     }
 }

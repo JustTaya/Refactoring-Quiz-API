@@ -22,8 +22,8 @@ public class AuthService {
 
     @Transactional
     public UserDto register(User user) {
-        User userdb =userDao.findByEmail(user.getEmail());
-        if(userdb != null){
+        User foundedUser =userDao.findByEmail(user.getEmail());
+        if(foundedUser != null){
             throw new EmailExistException("User with this email already exist");
         }
         user.setPassword(user.getPassword());
@@ -34,13 +34,13 @@ public class AuthService {
     }
 
     public String login(User user) {
-        User userdb = userDao.findByEmail(user.getEmail());
-        if (userdb == null) {
+        User foundedUser = userDao.findByEmail(user.getEmail());
+        if (foundedUser == null) {
             throw new NotFoundException("user", "email", user.getEmail());
         }
-        if(!passwordEncoder.matches(user.getPassword(), userdb.getPassword())){
+        if(!passwordEncoder.matches(user.getPassword(), foundedUser.getPassword())){
             throw new PasswordException();
         }
-        return tokenProvider.createToken(userdb.getEmail());
+        return tokenProvider.createToken(foundedUser.getEmail());
     }
 }

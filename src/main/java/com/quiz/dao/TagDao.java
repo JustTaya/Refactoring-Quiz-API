@@ -11,7 +11,10 @@ import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
 
 import java.sql.PreparedStatement;
+import java.util.Collections;
 import java.util.List;
+
+import static com.quiz.dao.mapper.TagMapper.ID;
 
 @Repository
 @RequiredArgsConstructor
@@ -75,7 +78,7 @@ public class TagDao {
     public List<Tag> getTagsByQuiz(int quizId) {
         List<Tag> tagsByQuiz = jdbcTemplate.query(TAGS_BY_QUIZ, new Object[]{quizId}, new TagMapper());
         if (tagsByQuiz.isEmpty()) {
-            return null;
+            return Collections.emptyList();
         }
         return tagsByQuiz;
     }
@@ -85,7 +88,7 @@ public class TagDao {
         try {
             jdbcTemplate.update(connection -> {
                 PreparedStatement ps = connection
-                        .prepareStatement(INSERT_TAG, new String[]{"id"});
+                        .prepareStatement(INSERT_TAG, new String[]{ID});
                 ps.setString(1, entity.getName());
                 ps.setString(2, entity.getName());
                 return ps;

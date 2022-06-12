@@ -1,7 +1,6 @@
 package com.quiz.service;
 
 import com.quiz.dao.AnswerDao;
-import com.quiz.dto.AnswerDto;
 import com.quiz.entities.Answer;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;

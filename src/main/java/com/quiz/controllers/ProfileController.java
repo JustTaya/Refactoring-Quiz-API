@@ -11,13 +11,11 @@ import com.quiz.service.QuizService;
 import com.quiz.service.StoreFileService;
 import com.quiz.service.UserService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.IOException;
 import java.util.List;
 import java.util.Set;
 
@@ -26,67 +24,29 @@ import java.util.Set;
 @RequiredArgsConstructor
 @CrossOrigin
 public class ProfileController {
-    @Autowired
-    StoreFileService storeFileService;
-    @Autowired
-    UserService userRepo;
-    @Autowired
-    QuizService quizService;
-    @Autowired
-    PaginationService paginationService;
-    @Autowired
-    GameDao gameDao;
 
-    @GetMapping("/myprofile/{userId}")
+    private final StoreFileService storeFileService;
+    private final UserService userRepo;
+    private final QuizService quizService;
+    private final PaginationService paginationService;
+    private final GameDao gameDao;
+
+    @GetMapping("/{userId}")
     public ResponseEntity<User> getUserProfile(@PathVariable int userId) {
         return ResponseEntity.status(HttpStatus.OK).body(userRepo.findProfileInfoByUserId(userId));
     }
 
-    @GetMapping("/myfriends/{pageSize}/{pageNumber}/{userId}")
-    public ResponseEntity<ResponcePaginatedList<User>> getFriends(@PathVariable int pageSize,
-                                                                  @PathVariable int pageNumber,
-                                                                  @PathVariable int userId,
-                                                                  @RequestParam(defaultValue = "", required = false, value = "sort") String sort) {
-        List<User> friends = userRepo.findFriendByUserId(userId, sort);
-        return ResponseEntity.ok(new ResponcePaginatedList<>(paginationService.paginate(friends, pageSize, pageNumber), friends.size()));
-    }
 
-    @GetMapping("/myfriends/{userSearch}/{pageSize}/{pageNumber}/{userId}")
-    public ResponseEntity<ResponcePaginatedList<User>> getFriends(@PathVariable String userSearch,
-                                                                  @PathVariable int pageSize,
-                                                                  @PathVariable int pageNumber,
-                                                                  @PathVariable int userId,
-                                                                  @RequestParam(defaultValue = "", required = false, value = "sort") String sort) {
-        List<User> friends = userRepo.filterFriendByUserId(userSearch, userId, sort);
-        return ResponseEntity.ok(new ResponcePaginatedList<>(paginationService.paginate(friends, pageSize, pageNumber), friends.size()));
-    }
-
-    @GetMapping("/adminUsers/{pageSize}/{pageNumber}/{userId}")
-    public ResponseEntity<ResponcePaginatedList<User>> getAdminUsers(@PathVariable int pageSize, @PathVariable int pageNumber, @PathVariable int userId) {
-        List<User> users = userRepo.findAdminsUsers(userId);
-        return ResponseEntity.ok(new ResponcePaginatedList<User>(paginationService.paginate(users, pageSize, pageNumber), users.size()));
-    }
-
-    @GetMapping("/adminUsers/filter/{searchByUser}/{pageSize}/{pageNumber}/{userId}")
-    public ResponseEntity<ResponcePaginatedList<User>> getFilteredUsers(@PathVariable String searchByUser,
-                                                                        @PathVariable int pageSize,
-                                                                        @PathVariable int pageNumber,
-                                                                        @PathVariable int userId) {
-        List<User> users = userRepo.getUsersByFilter(searchByUser, userId);
-        return ResponseEntity.ok(new ResponcePaginatedList<>(paginationService.paginate(users, pageSize, pageNumber), users.size()));
-    }
-
-    @GetMapping("/roleStatus/{role}/{status}/{pageSize}/{pageNumber}/{userId}")
+    @GetMapping("/role-status/{role}/{status}")
     public ResponseEntity<ResponcePaginatedList<User>> getUsersByRoleStatus(@PathVariable String role,
                                                                             @PathVariable String status,
-                                                                            @PathVariable int pageSize,
-                                                                            @PathVariable int pageNumber,
-                                                                            @PathVariable int userId) {
-        List<User> users = userRepo.findUsersByRoleStatus(role, status, userId);
-        return ResponseEntity.ok(new ResponcePaginatedList<>(paginationService.paginate(users, pageSize, pageNumber), users.size()));
+                                                                            @RequestParam(required = false, defaultValue = "10", value = "limit") int limit,
+                                                                            @RequestParam(required = false, defaultValue = "0", value = "offset") int offset) {
+        List<User> users = userRepo.findUsersByRoleStatus(role, status);
+        return ResponseEntity.ok(new ResponcePaginatedList<>(paginationService.paginate(users, limit, offset), users.size()));
     }
 
-    @PostMapping("/myprofile/update")
+    @PatchMapping
     public ResponseEntity<User> updateUserProfile(@RequestBody User user) {
         boolean isRecordAffected = userRepo.updateUser(user);
 
@@ -96,7 +56,7 @@ public class ProfileController {
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
     }
 
-    @PostMapping("updatePassword/{userId}")
+    @PatchMapping("/password/{userId}")
     public ResponseEntity<String> updatePassword(@RequestBody String newPassword, @PathVariable int userId) {
         boolean isRecordAffected = userRepo.updatePasswordById(userId, newPassword);
 
@@ -106,48 +66,24 @@ public class ProfileController {
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
     }
 
-    @GetMapping("/myquizzes/{pageSize}/{pageNumber}/{userId}")
-    public ResponseEntity<ResponcePaginatedList<Quiz>> getUserQuizzes(@PathVariable int pageSize,
-                                                                      @PathVariable int pageNumber,
-                                                                      @PathVariable int userId,
-                                                                      @RequestParam(defaultValue = "", required = false, value = "sort") String sort) {
-        List<Quiz> quizzes = quizService.findQuizzesCreatedByUserId(userId, sort);
-        return ResponseEntity.ok(new ResponcePaginatedList<>(paginationService.paginate(quizzes, pageSize, pageNumber), quizzes.size()));
-    }
-
-    @GetMapping("/myquizzes/{userSearch}/{pageSize}/{pageNumber}/{userId}")
-    public ResponseEntity<ResponcePaginatedList<Quiz>> getUserQuizzes(@PathVariable String userSearch,
-                                                                      @PathVariable int pageSize,
-                                                                      @PathVariable int pageNumber,
-                                                                      @PathVariable int userId,
-                                                                      @RequestParam(defaultValue = "", required = false, value = "sort") String sort) {
-        List<Quiz> quizzes = quizService.filterQuizzesByUserId(userSearch, userId, sort);
-        return ResponseEntity.ok(new ResponcePaginatedList<>(paginationService.paginate(quizzes, pageSize, pageNumber), quizzes.size()));
-    }
-
-    @GetMapping("/myfavorite/{userId}/{pageSize}/{pageNumber}")
+    @GetMapping("/favorite/{userId}")
     public ResponseEntity<ResponcePaginatedList<QuizDto>> getFavoriteQuizzes(@PathVariable int userId,
-                                                                          @PathVariable int pageSize,
-                                                                          @PathVariable int pageNumber) {
+                                                                             @RequestParam(required = false, defaultValue = "10", value = "limit") int limit,
+                                                                             @RequestParam(required = false, defaultValue = "0", value = "offset") int offset) {
         List<QuizDto> quizzes = quizService.findFavoriteQuizzes(userId);
-        return ResponseEntity.ok(new ResponcePaginatedList<>(paginationService.paginate(quizzes, pageSize, pageNumber), quizzes.size()));
+        return ResponseEntity.ok(new ResponcePaginatedList<>(paginationService.paginate(quizzes, limit, offset), quizzes.size()));
     }
 
-    @GetMapping("/myfavorite/{userSearch}/{userId}/{pageSize}/{pageNumber}")
-    public ResponseEntity<ResponcePaginatedList<QuizDto>> getFavoriteQuizzes(@PathVariable String userSearch,
-                                                                          @PathVariable int userId,
-                                                                          @PathVariable int pageSize,
-                                                                          @PathVariable int pageNumber) {
-        List<QuizDto> quizzes = quizService.searchInFavoriteQuizzes(userId, userSearch);
-        return ResponseEntity.ok(new ResponcePaginatedList<>(paginationService.paginate(quizzes, pageSize, pageNumber), quizzes.size()));
+    @GetMapping("/favorite/{userFilter}/{userId}")
+    public ResponseEntity<ResponcePaginatedList<QuizDto>> getFavoriteQuizzes(@PathVariable String userFilter,
+                                                                             @PathVariable int userId,
+                                                                             @RequestParam(required = false, defaultValue = "10", value = "limit") int limit,
+                                                                             @RequestParam(required = false, defaultValue = "0", value = "offset") int offset) {
+        List<QuizDto> quizzes = quizService.searchInFavoriteQuizzes(userId, userFilter);
+        return ResponseEntity.ok(new ResponcePaginatedList<>(paginationService.paginate(quizzes, limit, offset), quizzes.size()));
     }
 
-    @GetMapping("/category/{categoryId}")
-    public ResponseEntity<ResponseText> getCategoryNameByCategoryId(@PathVariable int categoryId) {
-        return ResponseEntity.ok(new ResponseText(quizService.getCategoryNameByCategoryId(categoryId)));
-    }
-
-    @PostMapping("/newicon/{userId}")
+    @PostMapping("/icon/{userId}")
     public ResponseEntity<String> changeProfileIcon(@RequestParam(value = "image") MultipartFile image, @PathVariable int userId) {
         boolean isRecordAffected = userRepo.updateProfileImage(storeFileService.uploadToLocalFileSystem(image), userId);
 
@@ -157,7 +93,7 @@ public class ProfileController {
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
     }
 
-    @GetMapping("/getimage/{userId}")
+    @GetMapping("/image/{userId}")
     public ResponseEntity<ResponseText> getUserImage(@PathVariable int userId) {
         return ResponseEntity.ok(new ResponseText(userRepo.getImageByUserId(userId)));
     }
@@ -173,17 +109,17 @@ public class ProfileController {
     }
 
     @GetMapping("/status/{userId}")
-    public ResponseEntity<NotificationStatus> getUserNotificationStatus(@PathVariable int userId){
+    public ResponseEntity<NotificationStatus> getUserNotificationStatus(@PathVariable int userId) {
         return ResponseEntity.ok(userRepo.getNotificationStatus(userId));
     }
 
-    @DeleteMapping("/delete/{id}")
+    @DeleteMapping("/{id}")
     void deleteUserById(@PathVariable int id) {
         userRepo.deleteUserById(id);
     }
 
-    @PostMapping("updateActive/{userId}")
-    public ResponseEntity<String> updateStatus(@RequestBody String status, @PathVariable int userId) {
+    @PatchMapping("/status/{userId}")
+    public ResponseEntity<String> updateStatus(@PathVariable int userId) {
         boolean isRecordAffected = userRepo.updateStatusById(userId);
 
         if (isRecordAffected) {
@@ -192,39 +128,36 @@ public class ProfileController {
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
     }
 
-    @GetMapping("/played/{pageSize}/{pageNumber}/{userId}")
-    public ResponcePaginatedList<GameDto> getPlayedGames(@PathVariable int pageSize,
-                                                         @PathVariable int pageNumber,
-                                                         @PathVariable int userId,
+    @GetMapping("/played/{userId}")
+    public ResponcePaginatedList<GameDto> getPlayedGames(@PathVariable int userId,
+                                                         @RequestParam(required = false, defaultValue = "10", value = "limit") int limit,
+                                                         @RequestParam(required = false, defaultValue = "0", value = "offset") int offset,
                                                          @RequestParam(defaultValue = "", required = false, value = "sort") String sort,
                                                          @RequestParam(defaultValue = "", required = false, value = "search") String search) {
         if (search.isEmpty()) {
-            return new ResponcePaginatedList<>(gameDao.getPlayedGame(userId, pageSize, pageNumber, sort), gameDao.getNumberOfRecord(userId));
+            return new ResponcePaginatedList<>(gameDao.getPlayedGame(userId, limit, offset, sort), gameDao.getNumberOfRecord(userId));
         }
-        return new ResponcePaginatedList<>(gameDao.getFilteredPlayedGame(userId, pageSize, pageNumber, sort, search), gameDao.getNumberOfRecord(userId));
+        return new ResponcePaginatedList<>(gameDao.getFilteredPlayedGame(userId, limit, offset, sort, search), gameDao.getNumberOfRecord(userId));
     }
 
-    @GetMapping("/gameresult/{gameId}")
+    @GetMapping("/game-result/{gameId}")
     public ResponseEntity<Set<Player>> getGameResult(@PathVariable int gameId) {
         return ResponseEntity.ok(gameDao.getGameResult(gameId));
     }
 
-    @GetMapping("/reject/{pageSize}/{pageNumber}/{userId}")
-    public ResponseEntity<ResponcePaginatedList<Quiz>> getUserRejectedQuizzes(@PathVariable int pageSize,
-                                                                              @PathVariable int pageNumber,
-                                                                              @PathVariable int userId,
+    @GetMapping("/reject/{userId}")
+    public ResponseEntity<ResponcePaginatedList<Quiz>> getUserRejectedQuizzes(@PathVariable int userId,
+                                                                              @RequestParam(required = false, defaultValue = "10", value = "limit") int limit,
+                                                                              @RequestParam(required = false, defaultValue = "0", value = "offset") int offset,
                                                                               @RequestParam(defaultValue = "", required = false, value = "sort") String sort) {
         List<Quiz> quizzes = quizService.getRejectedQuizzesByUserId(userId, sort);
-        return ResponseEntity.ok(new ResponcePaginatedList<>(paginationService.paginate(quizzes, pageSize, pageNumber), quizzes.size()));
+        return ResponseEntity.ok(new ResponcePaginatedList<>(paginationService.paginate(quizzes, limit, offset), quizzes.size()));
     }
 
-    @GetMapping("/rejectMessage/{quizId}")
+    @GetMapping("/reject-message/{quizId}")
     public ResponseEntity<List<RejectMessage>> getRejectMessage(@PathVariable int quizId) {
         return ResponseEntity.ok(quizService.getRejectMessages(quizId));
     }
 
-    @GetMapping("/moderatorQuizzes/{moderatorId}")
-    public ResponseEntity<List<QuizDto>> getModeratorAssignment(@PathVariable int moderatorId){
-        return ResponseEntity.ok(quizService.getModeratorQuizzes(moderatorId));
-    }
+
 }

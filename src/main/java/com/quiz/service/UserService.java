@@ -1,61 +1,30 @@
 package com.quiz.service;
 
 import com.quiz.dao.UserDao;
-import com.quiz.dto.UserDto;
 import com.quiz.entities.NotificationStatus;
 import com.quiz.entities.User;
-import com.quiz.exceptions.EmailExistException;
 import com.quiz.exceptions.NotFoundException;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
-import org.springframework.util.StringUtils;
-
 
 import java.util.List;
-import java.util.UUID;
 
 @Component
 @RequiredArgsConstructor
 public class UserService {
-    @Value("client.app")
-    String urlPath;
-
-    @Autowired
-    private MailSender mailSender;
-
-    private final UserDao userDao;
     private final PasswordEncoder passwordEncoder;
+    private final UserDao userDao;
+
+    private static final String ALL_STATUS = "AllStatus";
+    private static final String ALL_ROLE = "AllRole";
 
     public User findByEmail(String email) {
-        User userdb = userDao.findByEmail(email);
-        if (userdb == null) {
+        User userDB = userDao.findByEmail(email);
+        if (userDB == null) {
             throw new NotFoundException("user", "email", email);
         }
-        return userdb;
-    }
-
-    public UserDto addAdminUser(User user) {
-        User userdb =userDao.findByEmail(user.getEmail());
-        if(userdb != null){
-            throw new EmailExistException("User with this email already exist");
-        }
-        user.setRole(user.getRole());
-        user.setPassword(UUID.randomUUID().toString());
-        userDao.insert(user);
-
-        if(!StringUtils.isEmpty(user.getEmail())){
-            String message = String.format(
-              "Dear,%s \n" +
-                      "Welcome to Quizer. Visit:" + urlPath +"activate/%s",
-                    user.getEmail(),
-                    user.getPassword()
-            );
-            mailSender.send(user.getEmail(),"Activation code",message);
-        }
-        return new UserDto(user);
+        return userDB;
     }
 
     public User findById(int id) {
@@ -65,11 +34,6 @@ public class UserService {
     public User findProfileInfoByUserId(int id) {
         return userDao.findProfileInfoByUserId(id);
     }
-
-    public List<User> findFriendByUserId(int id, String sort) {
-        return userDao.findFriendByUserId(id, sort);
-    }
-
 
     public boolean updateUser(User user) {
         return userDao.updateUser(user);
@@ -86,7 +50,8 @@ public class UserService {
     public int getUserIdByEmail(String email) {
         return userDao.getUserIdByEmail(email);
     }
-    public String getUserRoleByEmail(String email){
+
+    public String getUserRoleByEmail(String email) {
         return userDao.getUserRoleByEmail(email);
     }
 
@@ -101,25 +66,33 @@ public class UserService {
     public boolean changeNotificationStatus(String status, int userId) {
         return userDao.updateNotificationStatus(status, userId);
     }
-    public List<User> findAdminsUsers(int userId){
-        return userDao.findAdminsUsers(userId);
-    }
-    public List<User> findUsersByRoleStatus(String role, String status, int userId) {
 
-        if(status.equals("AllStatus") && role.equals("AllRole")){ return userDao.findAdminsUsers(userId);}
-        if(status.equals("AllStatus") && !role.equals("AllRole")){ return userDao.getUsersByRole(role,userId);}
-        if(!status.equals("AllStatus") && role.equals("AllRole")){ return userDao.getUsersByStatus(status,userId);}
-        return userDao.getUsersByRoleStatus(role,status,userId);
-    }
-    public List<User> getUsersByFilter(String searchByUser, int userId) {
-        return userDao.getUsersByFilter(searchByUser, userId);
+    public List<User> findUsersByRoleStatus(String role, String status) {
+        if (status.equals(ALL_STATUS) && role.equals(ALL_ROLE)) {
+            return userDao.findAdminsUsers();
+        }
+        if (status.equals(ALL_STATUS)) {
+            return userDao.getUsersByRole(role);
+        }
+        if (role.equals(ALL_ROLE)) {
+            return userDao.getUsersByStatus(status);
+        }
+
+        return userDao.getUsersByRoleStatus(role, status);
     }
 
-    public void deleteUserById(int id) { userDao.deleteUserById(id); }
+    public List<User> getUsersByFilter(String searchByUser) {
+        return userDao.getUsersByFilter(searchByUser);
+    }
+
+    public void deleteUserById(int id) {
+        userDao.deleteUserById(id);
+    }
 
     public NotificationStatus getNotificationStatus(int userId) {
         return userDao.getUserNotification(userId);
     }
+
     public Integer getRatingByUser(int userId) {
         return userDao.getRatingByUser(userId);
     }
@@ -132,13 +105,9 @@ public class UserService {
         return userDao.getRatingInRange(userId, range);
     }
 
-    public List<User> filterFriendByUserId(String userSearch, int userId, String sort) {
-        return userDao.filterFriendByUserId(userSearch, userId, sort);
-    }
-
     public boolean activateUser(String code) {
         User user = userDao.findByActivationCode(code);
-        if(user == null){
+        if (user == null) {
             return false;
         }
         user.setPassword(null);
@@ -146,8 +115,8 @@ public class UserService {
         return true;
     }
 
-    public User findByPassword(String code) {
-       return userDao.findByActivationCode(code);
+    public User findByActivationCode(String code) {
+        return userDao.findByActivationCode(code);
     }
 }
 

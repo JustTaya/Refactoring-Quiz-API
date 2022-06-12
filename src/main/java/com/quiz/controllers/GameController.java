@@ -10,15 +10,13 @@ import org.springframework.messaging.handler.annotation.DestinationVariable;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.simp.SimpMessageHeaderAccessor;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
+import java.util.Map;
 
 @RestController
 @CrossOrigin
+@RequestMapping("/quizzes/play")
 public class GameController {
 
     @Autowired
@@ -26,41 +24,48 @@ public class GameController {
     @Autowired
     private SimpMessagingTemplate template;
 
-    @PostMapping("/play/addSession")
+    private static final String GAME_URL = "/quizzes/play/game/%s";
+
+    @PostMapping("/session")
     public int addGameSession(@RequestBody GameSessionDto gameSessionDto) {
         return gameService.addGameSession(gameSessionDto.getQuizId(), gameSessionDto.getHostId(),
                 gameSessionDto.getQuestionTimer(), gameSessionDto.getMaxUsersNumber());
     }
 
-    @MessageMapping("/play/game/{gameId}/user")
+    @MessageMapping("/game/{gameId}/user")
     public void userJoinGameSession(@DestinationVariable int gameId, @RequestBody Player player, SimpMessageHeaderAccessor headerAccessor) {
-        headerAccessor.getSessionAttributes().put("userId", player.getUserId());
-        headerAccessor.getSessionAttributes().put("gameId", gameId);
-        template.convertAndSend("/play/game/" + gameId, gameService.addUserInSession(gameId, player));
+        Map<String, Object> sessionAttributes = headerAccessor.getSessionAttributes();
+
+        if (sessionAttributes != null) {
+            sessionAttributes.put("userId", player.getUserId());
+            sessionAttributes.put("gameId", gameId);
+        }
+
+        template.convertAndSend(String.format(GAME_URL, gameId), gameService.addUserInSession(gameId, player));
     }
 
-    @MessageMapping("/play/game/{gameId}/start")
+    @MessageMapping("/game/{gameId}/start")
     public void startGame(@DestinationVariable int gameId) {
         this.sendQuestion(gameId, this.gameService.nextQuestion(gameId));
     }
 
-    @MessageMapping("play/game/{gameId}/sendAnswer")
+    @MessageMapping("/game/{gameId}/sendAnswer")
     public void receiveAnswer(@DestinationVariable int gameId, @RequestBody GameAnswersDto answers) {
         if (this.gameService.handleAnswer(gameId, answers.getPlayer(), answers)) {
             this.sendQuestion(gameId, this.gameService.nextQuestion(gameId));
         }
     }
 
-    @MessageMapping("/play/game/{gameId}/finish")
+    @MessageMapping("/game/{gameId}/finish")
     public void finishGame(@DestinationVariable int gameId) {
         GameSessionDto rating = gameService.deleteGameSession(gameId);
         if (rating != null) {
-            template.convertAndSend("/play/game/" + gameId, rating);
+            template.convertAndSend(String.format(GAME_URL, gameId), rating);
         }
     }
 
     private void sendQuestion(int gameId, GameQuestionsDto gameQuestionsDto) {
-        template.convertAndSend("/play/game/" + gameId, gameQuestionsDto);
+        template.convertAndSend(String.format(GAME_URL, gameId), gameQuestionsDto);
     }
 
     public void handleUserDisconnection(int userId, int gameId) {

@@ -17,14 +17,14 @@ public class AnnouncementDao {
     @Autowired
     private JdbcTemplate jdbcTemplate;
 
-    private final static String GET_ANNON_FOR_AUTH_BY_ID = "SELECT date, text, generated FROM system_announcements " +
+    private static final String GET_ANNON_FOR_AUTH_BY_ID = "SELECT date, text, generated FROM system_announcements " +
             "INNER JOIN friends ON sender_id = friend_id " +
             "WHERE user_id = ? AND sender_id <> ?" +
             "ORDER BY date desc";
-    private final static String GET_ANNON_FOR_ANONIM = "SELECT date, text, generated FROM system_announcements " +
+    private static final String GET_ANNON_FOR_ANONIM = "SELECT date, text, generated FROM system_announcements " +
             "WHERE generated = false " +
             "ORDER BY date desc";
-    private final static String CREATE_GAME_RESULT_ANNON = "INSERT INTO system_announcements (sender_id, date, text, generated) VALUES (?, ?, ?, ?)";
+    private static final String CREATE_GAME_RESULT_ANNON = "INSERT INTO system_announcements (sender_id, date, text, generated) VALUES (?, ?, ?, ?)";
 
     public List<Announcement> getAnnouncementsByUserId(int userId) {
         return jdbcTemplate.query(GET_ANNON_FOR_AUTH_BY_ID,

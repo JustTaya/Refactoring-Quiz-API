@@ -4,14 +4,12 @@ import com.quiz.dao.mapper.AnswerMapper;
 import com.quiz.dto.AnswerDto;
 import com.quiz.entities.Answer;
 import com.quiz.exceptions.DatabaseException;
-import com.quiz.service.StoreFileService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
@@ -26,6 +24,8 @@ import static com.quiz.dao.mapper.AnswerMapper.*;
 @RequiredArgsConstructor
 public class AnswerDao {
     private final JdbcTemplate jdbcTemplate;
+
+    public static final String IMAGES = "images";
 
     private static final String ANSWER_FIND_BY_ID = "SELECT id, question_id, text, correct, image, next_answer_id FROM answers WHERE id = ?";
     private static final String ANSWER_FIND_BY_QUESTION_ID = "SELECT id, question_id, text, correct, image, next_answer_id FROM answers WHERE question_id = ? ORDER BY id DESC";
@@ -48,7 +48,7 @@ public class AnswerDao {
         try {
             return jdbcTemplate.queryForObject(ANSWER_FIND_BY_ID, new Object[]{id}, new AnswerMapper());
         } catch (DataAccessException e) {
-            throw new DatabaseException(String.format("Find answer by id '%s' database error occured", id));
+            throw new DatabaseException(String.format("Find answer by id '%s' database error occurred", id));
         }
     }
 
@@ -56,14 +56,14 @@ public class AnswerDao {
         try {
             return jdbcTemplate.query(ANSWER_FIND_BY_QUESTION_ID,
                     new Object[]{id},
-                    ((resultSet, i) -> new Answer(resultSet.getInt(ANSWER_ID),
-                                resultSet.getInt(ANSWER_QUESTION_ID),
-                                resultSet.getString(ANSWER_TEXT),
-                                resultSet.getBoolean(ANSWER_CORRECT),
-                                resultSet.getInt(ANSWER_NEXT_ANSWER_ID),
+                    ((resultSet, i) -> new Answer(resultSet.getInt(ID),
+                                resultSet.getInt(QUESTION_ID),
+                                resultSet.getString(TEXT),
+                                resultSet.getBoolean(CORRECT),
+                                resultSet.getInt(NEXT_ANSWER_ID),
                                 resultSet.getString("image"))));
         } catch (DataAccessException e) {
-            throw new DatabaseException(String.format("Find answer by id '%s' database error occured", id));
+            throw new DatabaseException(String.format("Find answer by id '%s' database error occurred", id));
         }
     }
 
@@ -74,18 +74,18 @@ public class AnswerDao {
                     (resultSet, i) -> {
                         AnswerDto answerDto = new AnswerDto();
 
-                        answerDto.setId(resultSet.getInt(ANSWER_ID));
-                        answerDto.setQuestionId(resultSet.getInt(ANSWER_QUESTION_ID));
-                        answerDto.setText(resultSet.getString(ANSWER_TEXT));
-                        answerDto.setCorrect(resultSet.getBoolean(ANSWER_CORRECT));
+                        answerDto.setId(resultSet.getInt(ID));
+                        answerDto.setQuestionId(resultSet.getInt(QUESTION_ID));
+                        answerDto.setText(resultSet.getString(TEXT));
+                        answerDto.setCorrect(resultSet.getBoolean(CORRECT));
                         answerDto.setImage(resultSet.getString("image"));
-                        answerDto.setNextAnswerId(resultSet.getInt(ANSWER_NEXT_ANSWER_ID));
+                        answerDto.setNextAnswerId(resultSet.getInt(NEXT_ANSWER_ID));
 
                         return answerDto;
                     }
             );
         } catch (DataAccessException e) {
-            throw new DatabaseException(String.format("Find answer by id '%s' database error occured", id));
+            throw new DatabaseException(String.format("Find answer by id '%s' database error occurred", id));
         }
     }
 
@@ -97,7 +97,7 @@ public class AnswerDao {
         try {
             jdbcTemplate.update(connection -> {
                 PreparedStatement ps = connection
-                        .prepareStatement(INSERT_ANSWER, new String[]{"id"});
+                        .prepareStatement(INSERT_ANSWER, new String[]{ID});
                 ps.setInt(1, entity.getQuestionId());
                 ps.setString(2, entity.getText());
                 ps.setBoolean(3, entity.isCorrect());
@@ -126,7 +126,7 @@ public class AnswerDao {
         } else if (entity.isChanged()) {
             jdbcTemplate.update(connection -> {
                 PreparedStatement ps = connection
-                        .prepareStatement(UPDATE_ANSWER, new String[]{"id"});
+                        .prepareStatement(UPDATE_ANSWER, new String[]{ID});
                 ps.setInt(1, questionId);
                 ps.setString(2, entity.getText());
                 ps.setBoolean(3, entity.isCorrect());
@@ -163,7 +163,7 @@ public class AnswerDao {
         List<byte[]> imageBlob = jdbcTemplate.query(
                 ANSWER_IMAGE_BY_ID,
                 new Object[]{answerId},
-                (resultSet, i) -> resultSet.getBytes("images"));
+                (resultSet, i) -> resultSet.getBytes(IMAGES));
 
         return imageBlob.get(0);
     }

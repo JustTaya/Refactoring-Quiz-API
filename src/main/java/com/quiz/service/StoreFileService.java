@@ -22,16 +22,16 @@ public class StoreFileService {
     private String path;
 
     public String uploadToLocalFileSystem(MultipartFile file) {
-        String fileName = UUID.randomUUID().toString() + StringUtils.cleanPath(file.getOriginalFilename());
+        String fileName = UUID.randomUUID() + StringUtils.cleanPath(file.getOriginalFilename());
 
         File uploadDir = new File(this.path);
         if (!uploadDir.exists()) {
             uploadDir.mkdir();
         }
 
-        Path path = Paths.get(this.path + fileName);
+        Path filePath = Paths.get(this.path + fileName);
         try {
-            Files.copy(file.getInputStream(), path, StandardCopyOption.REPLACE_EXISTING);
+            Files.copy(file.getInputStream(), filePath, StandardCopyOption.REPLACE_EXISTING);
         } catch (IOException e) {
             e.printStackTrace();
         }

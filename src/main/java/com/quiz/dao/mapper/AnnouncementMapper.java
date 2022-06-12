@@ -10,11 +10,13 @@ import java.sql.SQLException;
 @Component
 public class AnnouncementMapper implements RowMapper<Announcement> {
 
-    private final String DATE = "date";
-    private final String TEXT = "text";
-    private final String GENERATED = "generated";
+    private static final String DATE = "date";
+    private static final String TEXT = "text";
+    private static final String GENERATED = "generated";
     @Override
     public Announcement mapRow(ResultSet resultSet, int i) throws SQLException {
-        return new Announcement(resultSet.getDate(DATE), resultSet.getString(TEXT), resultSet.getBoolean(GENERATED));
+        return new Announcement(resultSet.getDate(DATE),
+                resultSet.getString(TEXT),
+                resultSet.getBoolean(GENERATED));
     }
 }

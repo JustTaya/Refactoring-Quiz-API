@@ -9,21 +9,21 @@ import java.sql.SQLException;
 
 @Component
 public class AchievementMapper implements RowMapper<Achievement> {
-    public static final String ACHIEVEMENT_ID = "id";
-    public static final String ACHIEVEMENT_NAME = "name";
-    public static final String ACHIEVEMENT_DESCRIPTION = "description";
-    public static final String ACHIEVEMENT_CATEGORY_ID = "category_id";
-    public static final String ACHIEVEMENT_PROGRESS = "progress";
+    public static final String ID = "id";
+    public static final String NAME = "name";
+    public static final String DESCRIPTION = "description";
+    public static final String CATEGORY_ID = "category_id";
+    public static final String PROGRESS = "progress";
 
     @Override
     public Achievement mapRow(ResultSet resultSet, int i) throws SQLException {
         Achievement achievement = new Achievement();
 
-        achievement.setId(resultSet.getInt(ACHIEVEMENT_ID));
-        achievement.setName(resultSet.getString(ACHIEVEMENT_NAME));
-        achievement.setDescription(resultSet.getString(ACHIEVEMENT_DESCRIPTION));
-        achievement.setCategoryId(resultSet.getInt(ACHIEVEMENT_CATEGORY_ID));
-        achievement.setProgress(resultSet.getInt(ACHIEVEMENT_PROGRESS));
+        achievement.setId(resultSet.getInt(ID));
+        achievement.setName(resultSet.getString(NAME));
+        achievement.setDescription(resultSet.getString(DESCRIPTION));
+        achievement.setCategoryId(resultSet.getInt(CATEGORY_ID));
+        achievement.setProgress(resultSet.getInt(PROGRESS));
 
         return achievement;
     }

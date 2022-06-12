@@ -1,6 +1,5 @@
 package com.quiz.controllers;
 
-import com.quiz.dto.AnswerDto;
 import com.quiz.entities.Answer;
 import com.quiz.entities.ResponseText;
 import com.quiz.service.AnswerService;
@@ -16,7 +15,7 @@ import java.util.List;
 @RestController
 @CrossOrigin
 @RequiredArgsConstructor
-@RequestMapping("/quiz/answer")
+@RequestMapping("/quizzes/answers")
 public class AnswerController {
     private final AnswerService answerService;
 
@@ -32,12 +31,12 @@ public class AnswerController {
         return ResponseEntity.ok(answerService.findAnswersByQuestionId(questionId));
     }
 
-    @GetMapping("/get_image/{answerId}")
+    @GetMapping("/image/{answerId}")
     public ResponseEntity<ResponseText> getAnswerImage(@PathVariable int answerId) {
         return ResponseEntity.ok(new ResponseText(new String(Base64.getEncoder().encode(answerService.getImageByAnswerId(answerId)))));
     }
 
-    @PostMapping("/new_image/{answerId}")
+    @PostMapping("/image/{answerId}")
     public ResponseEntity<String> changeAnswerImage(@RequestParam(value = "image") MultipartFile image, @PathVariable int answerId) {
         boolean isRecordAffected = answerService.updateAnswerImage(image, answerId);
         if (isRecordAffected) {

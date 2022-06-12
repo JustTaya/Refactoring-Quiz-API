@@ -17,7 +17,7 @@ public class User {
     private String surname;
     private Date birthdate;
     private Gender gender;
-    private int country_id;
+    private int countryId;
     private String city;
     private int rating;
     private String about;
