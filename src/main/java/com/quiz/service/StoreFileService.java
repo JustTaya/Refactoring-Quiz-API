@@ -22,7 +22,7 @@ public class StoreFileService {
     private String path;
 
     public String uploadToLocalFileSystem(MultipartFile file) {
-        String fileName = UUID.randomUUID().toString() + StringUtils.cleanPath(file.getOriginalFilename());
+        String fileName = UUID.randomUUID() + StringUtils.cleanPath(file.getOriginalFilename());
 
         File uploadDir = new File(this.path);
         if (!uploadDir.exists()) {

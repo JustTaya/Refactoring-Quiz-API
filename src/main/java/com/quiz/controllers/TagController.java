@@ -16,7 +16,7 @@ public class TagController {
 
     private final TagService tagService;
 
-    @GetMapping("/id/{tagId}")
+    @GetMapping("/{tagId}")
     public ResponseEntity<Tag> getTagById(@PathVariable int tagId) {
         return ResponseEntity.ok(tagService.findById(tagId));
     }
@@ -26,9 +26,10 @@ public class TagController {
         return ResponseEntity.ok(tagService.findTagByName(tagName));
     }
 
-    @GetMapping("/regex_name")
-    public ResponseEntity<List<Tag>> getTagsByName(@RequestParam(value = "name") String tagName) {
-        return ResponseEntity.ok(tagService.findTagsByName(tagName));
+    @GetMapping("/regex_name/{regexName}")
+    public ResponseEntity<List<Tag>> getTagsByName(@PathVariable String regexName) {
+        return ResponseEntity.ok(tagService.findTagsByName(regexName));
+
     }
 
     @GetMapping("/quiz/{quizId}")

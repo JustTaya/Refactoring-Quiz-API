@@ -13,40 +13,40 @@ import java.sql.SQLException;
 @Component
 public class UserMapper implements RowMapper<User> {
 
-    public static final String USERS_ID = "id";
-    public static final String USERS_PASSWORD = "password";
-    public static final String USERS_EMAIL = "email";
-    public static final String USERS_ROLE = "role";
-    public static final String USERS_NAME = "name";
-    public static final String USERS_SURNAME = "surname";
-    public static final String USERS_BIRTHDATE = "birthdate";
-    public static final String USERS_GENDER = "gender";
-    public static final String USERS_COUNTRY_ID = "country_id";
-    public static final String USERS_CITY = "city";
-    public static final String USERS_RATING = "rating";
-    public static final String USERS_ABOUT = "about";
-    public static final String USERS_ACTIVE = "active";
-    public static final String USER_NOTIFICATIONS = "notifications";
+    public static final String ID = "id";
+    public static final String PASSWORD = "password";
+    public static final String EMAIL = "email";
+    public static final String ROLE = "role";
+    public static final String NAME = "name";
+    public static final String SURNAME = "surname";
+    public static final String BIRTHDATE = "birthdate";
+    public static final String GENDER = "gender";
+    public static final String COUNTRY_ID = "country_id";
+    public static final String CITY = "city";
+    public static final String RATING = "rating";
+    public static final String ABOUT = "about";
+    public static final String ACTIVE = "active";
+    public static final String NOTIFICATIONS = "notifications";
 
 
     @Override
     public User mapRow(ResultSet resultSet, int rowNum) throws SQLException {
         User user = new User();
 
-        user.setId(resultSet.getInt(USERS_ID));
-        user.setEmail(resultSet.getString(USERS_EMAIL));
-        user.setPassword(resultSet.getString(USERS_PASSWORD));
-        user.setRole(Role.valueOf(resultSet.getString(USERS_ROLE).trim()));
-        user.setName(resultSet.getString(USERS_NAME));
-        user.setSurname(resultSet.getString(USERS_SURNAME));
-        user.setBirthdate(resultSet.getDate(USERS_BIRTHDATE));
-        user.setGender(Gender.valueOf(resultSet.getString(USERS_GENDER)));
-        user.setCountryId(resultSet.getInt(USERS_COUNTRY_ID));
-        user.setCity(resultSet.getString(USERS_CITY));
-        user.setRating(resultSet.getInt(USERS_RATING));
-        user.setAbout(resultSet.getString(USERS_ABOUT));
-        user.setActive(resultSet.getBoolean(USERS_ACTIVE));
-        user.setNotification(NotificationStatus.valueOf(resultSet.getString(USER_NOTIFICATIONS)));
+        user.setId(resultSet.getInt(ID));
+        user.setEmail(resultSet.getString(EMAIL));
+        user.setPassword(resultSet.getString(PASSWORD));
+        user.setRole(Role.valueOf(resultSet.getString(ROLE).trim()));
+        user.setName(resultSet.getString(NAME));
+        user.setSurname(resultSet.getString(SURNAME));
+        user.setBirthdate(resultSet.getDate(BIRTHDATE));
+        user.setGender(Gender.valueOf(resultSet.getString(GENDER)));
+        user.setCountryId(resultSet.getInt(COUNTRY_ID));
+        user.setCity(resultSet.getString(CITY));
+        user.setRating(resultSet.getInt(RATING));
+        user.setAbout(resultSet.getString(ABOUT));
+        user.setActive(resultSet.getBoolean(ACTIVE));
+        user.setNotification(NotificationStatus.valueOf(resultSet.getString(NOTIFICATIONS)));
 
         return user;
     }

@@ -14,7 +14,7 @@ import java.util.List;
 @RestController
 @CrossOrigin
 @RequiredArgsConstructor
-@RequestMapping("/quiz/question")
+@RequestMapping("/quizzes/questions")
 public class QuestionController {
     private final QuestionService questionService;
 
@@ -30,7 +30,7 @@ public class QuestionController {
                 .body(question);
     }
 
-    @GetMapping("/get_image/{questionId}")
+    @GetMapping("/image/{questionId}")
     public ResponseEntity<ResponseText> getQuestionImage(@PathVariable int questionId) {
         return ResponseEntity.ok(new ResponseText(new String(Base64.getEncoder().encode(questionService.getQuestionByQuestionId(questionId)))));
     }

@@ -7,16 +7,15 @@ import com.quiz.entities.Achievement;
 import com.quiz.entities.AchievementCategory;
 import com.quiz.entities.UserAchievement;
 import com.quiz.exceptions.DatabaseException;
-import java.util.Collections;
 import lombok.RequiredArgsConstructor;
 import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
+import java.util.Collections;
 import java.util.List;
 
 import static com.quiz.dao.mapper.AchievementMapper.*;
-import static com.quiz.dao.mapper.AchievementMapper.ACHIEVEMENT_CATEGORY_ID;
 
 @Repository
 @RequiredArgsConstructor
@@ -44,10 +43,10 @@ public class AchievementDao {
         List<Achievement> achievements = jdbcTemplate.query(GET_ACHIEVEMENTS, (resultSet, i) -> {
             Achievement achievement = new Achievement();
 
-            achievement.setId(resultSet.getInt(ACHIEVEMENT_ID));
-            achievement.setName(resultSet.getString(ACHIEVEMENT_NAME));
-            achievement.setDescription(resultSet.getString(ACHIEVEMENT_DESCRIPTION));
-            achievement.setCategoryId(resultSet.getInt(ACHIEVEMENT_CATEGORY_ID));
+            achievement.setId(resultSet.getInt(ID));
+            achievement.setName(resultSet.getString(NAME));
+            achievement.setDescription(resultSet.getString(DESCRIPTION));
+            achievement.setCategoryId(resultSet.getInt(CATEGORY_ID));
 
             return achievement;
         });
@@ -61,10 +60,10 @@ public class AchievementDao {
         List<Achievement> achievements = jdbcTemplate.query(GET_ACHIEVEMENTS_BY_CATEGORIES, new Object[]{categoryId}, (resultSet, i) -> {
             Achievement achievement = new Achievement();
 
-            achievement.setId(resultSet.getInt(ACHIEVEMENT_ID));
-            achievement.setName(resultSet.getString(ACHIEVEMENT_NAME));
-            achievement.setDescription(resultSet.getString(ACHIEVEMENT_DESCRIPTION));
-            achievement.setCategoryId(resultSet.getInt(ACHIEVEMENT_CATEGORY_ID));
+            achievement.setId(resultSet.getInt(ID));
+            achievement.setName(resultSet.getString(NAME));
+            achievement.setDescription(resultSet.getString(DESCRIPTION));
+            achievement.setCategoryId(resultSet.getInt(CATEGORY_ID));
 
             return achievement;
         });

@@ -7,10 +7,10 @@ import java.util.List;
 
 @Service
 public class PaginationService {
-    public <T> List<T> paginate(List<T> listForPagination, int pageSize, int pageNumber){
+    public <T> List<T> paginate(List<T> listForPagination, int limit, int offset){
         PagedListHolder<T> pageToReturn = new PagedListHolder<>(listForPagination);
-        pageToReturn.setPage(pageNumber);
-        pageToReturn.setPageSize(pageSize);
+        pageToReturn.setPage(offset);
+        pageToReturn.setPageSize(limit);
 
         return pageToReturn.getPageList();
     }

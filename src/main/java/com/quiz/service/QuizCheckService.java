@@ -23,22 +23,24 @@ public class QuizCheckService {
     private final QuizDao quizDao;
     private final QuestionDao questionDao;
     private final AnswerDao answerDao;
-    
-    public QuizCheckDto getQuizCheck (int id) {
+
+    public QuizCheckDto getQuizCheck(int id) {
         List<Question> questions = questionDao.findQuestionsByQuizId(id);
 
-        List<QuestionCheckDto> questionCheckDto= new ArrayList<>();
-        for(Question question: questions){
-            List<Answer> answers= answerDao.findAnswersByQuestionId(question.getId());
+        List<QuestionCheckDto> questionCheckDto = new ArrayList<>();
+        for (Question question : questions) {
+            List<Answer> answers = answerDao.findAnswersByQuestionId(question.getId());
             QuestionCheckDto questionDto = new QuestionCheckDto(question, answers);
             questionCheckDto.add(questionDto);
         }
         QuizDto quizDto = quizDao.findInfoById(id);
-         return new QuizCheckDto(quizDto, questionCheckDto);
+        return new QuizCheckDto(quizDto, questionCheckDto);
     }
+
     public boolean updateStatusById(int id, StatusType status) {
         return quizDao.updateStatusById(id, status);
     }
+
     public ModeratorComment addCommentByQuizId(ModeratorComment comment) {
         return quizDao.addCommentByQuizId(comment);
     }
@@ -46,6 +48,7 @@ public class QuizCheckService {
     public boolean assignModerator(int quizId, int moderatorId) {
         return quizDao.assignModeratorById(quizId, moderatorId);
     }
+
     public List<ModeratorCommentDto> getCommentHistory(int quizId) {
         return quizDao.getCommentHistory(quizId);
     }

@@ -1,33 +1,20 @@
 package com.quiz.service;
 
 import com.quiz.dao.UserDao;
-import com.quiz.dto.UserDto;
 import com.quiz.entities.NotificationStatus;
 import com.quiz.entities.User;
-import com.quiz.exceptions.EmailExistException;
 import com.quiz.exceptions.NotFoundException;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
-import org.springframework.util.StringUtils;
-
 
 import java.util.List;
-import java.util.UUID;
 
 @Component
 @RequiredArgsConstructor
 public class UserService {
-    @Value("client.app")
-    String urlPath;
-
-    @Autowired
-    private MailSenderService mailSenderService;
-
-    private final UserDao userDao;
     private final PasswordEncoder passwordEncoder;
+    private final UserDao userDao;
 
     private static final String ALL_STATUS = "AllStatus";
     private static final String ALL_ROLE = "AllRole";
@@ -38,27 +25,6 @@ public class UserService {
             throw new NotFoundException("user", "email", email);
         }
         return userDB;
-    }
-
-    public UserDto addAdminUser(User user) {
-        User userDB = userDao.findByEmail(user.getEmail());
-        if (userDB != null) {
-            throw new EmailExistException("User with this email already exist");
-        }
-        user.setRole(user.getRole());
-        user.setPassword(UUID.randomUUID().toString());
-        userDao.insert(user);
-
-        if (!StringUtils.isEmpty(user.getEmail())) {
-            String message = String.format(
-                    "Dear,%s%n Welcome to Quizer. Visit: %s to activate/%s",
-                    user.getEmail(),
-                    urlPath,
-                    user.getPassword()
-            );
-            mailSenderService.send(user.getEmail(), "Activation code", message);
-        }
-        return new UserDto(user);
     }
 
     public User findById(int id) {
@@ -106,16 +72,18 @@ public class UserService {
         return userDao.updateNotificationStatus(status, userId);
     }
 
-    public List<User> findAdminsUsers() {
-        return userDao.findAdminsUsers();
-    }
-
     public List<User> findUsersByRoleStatus(String role, String status) {
+        if (status.equals(ALL_STATUS) && role.equals(ALL_ROLE)) {
+            return userDao.findAdminsUsers();
+        }
+        if (status.equals(ALL_STATUS)) {
+            return userDao.getUsersByRole(role);
+        }
+        if (role.equals(ALL_ROLE)) {
+            return userDao.getUsersByStatus(status);
+        }
 
-        if(status.equals(ALL_STATUS) && role.equals(ALL_ROLE)){ return userDao.findAdminsUsers();}
-        if(status.equals(ALL_STATUS)){ return userDao.getUsersByRole(role);}
-        if(role.equals(ALL_ROLE)){ return userDao.getUsersByStatus(status);}
-        return userDao.getUsersByRoleStatus(role,status);
+        return userDao.getUsersByRoleStatus(role, status);
     }
 
     public List<User> getUsersByFilter(String searchByUser) {
@@ -156,7 +124,7 @@ public class UserService {
         return true;
     }
 
-    public User findByPassword(String code) {
+    public User findByActivationCode(String code) {
         return userDao.findByActivationCode(code);
     }
 }

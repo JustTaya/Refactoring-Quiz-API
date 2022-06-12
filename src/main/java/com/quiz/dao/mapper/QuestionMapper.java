@@ -11,25 +11,25 @@ import java.sql.SQLException;
 @Component
 public class QuestionMapper implements RowMapper<Question> {
 
-    public static final String QUESTION_ID = "id";
-    public static final String QUESTION_QUIZ_ID = "quiz_id";
-    public static final String QUESTION_TYPE = "type";
-    public static final String QUESTION_TEXT = "text";
-    public static final String QUESTION_ACTIVE = "active";
-    public static final String QUESTION_LANGUAGE_ID = "language_id";
-    public static final String QUESTION_IMAGE = "image";
+    public static final String ID = "id";
+    public static final String QUIZ_ID = "quiz_id";
+    public static final String TYPE = "type";
+    public static final String TEXT = "text";
+    public static final String ACTIVE = "active";
+    public static final String LANGUAGE_ID = "language_id";
+    public static final String IMAGE = "image";
 
     @Override
     public Question mapRow(ResultSet resultSet, int rowNum) throws SQLException {
         Question question = new Question();
 
-        question.setId(resultSet.getInt(QUESTION_ID));
-        question.setQuizId(resultSet.getInt(QUESTION_QUIZ_ID));
-        question.setType(QuestionType.valueOf(resultSet.getString(QUESTION_TYPE)));
-        question.setImage(resultSet.getString(QUESTION_IMAGE));
-        question.setText(resultSet.getString(QUESTION_TEXT));
-        question.setActive(resultSet.getBoolean(QUESTION_ACTIVE));
-        question.setLanguageId(resultSet.getInt(QUESTION_LANGUAGE_ID));
+        question.setId(resultSet.getInt(ID));
+        question.setQuizId(resultSet.getInt(QUIZ_ID));
+        question.setType(QuestionType.valueOf(resultSet.getString(TYPE)));
+        question.setImage(resultSet.getString(IMAGE));
+        question.setText(resultSet.getString(TEXT));
+        question.setActive(resultSet.getBoolean(ACTIVE));
+        question.setLanguageId(resultSet.getInt(LANGUAGE_ID));
 
         return question;
     }

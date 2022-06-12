@@ -34,6 +34,48 @@ public class QuizDao {
     private final TagDao tagDao;
     private final QuizConverter quizConverter;
 
+    public static final String QUIZ_ID = "quiz_id";
+    public static final String QUIZ_NAME = "quizName";
+    public static final String QUIZ_IMAGE = "quizImage";
+    public static final String QUIZ_AUTHOR = "quizAuthor";
+    public static final String QUIZ_DATE = "quizDate";
+    public static final String QUIZ_DESCRIPTION = "quizDescription";
+    public static final String QUIZ_CATEGORY_ID = "quizCategoryId";
+    public static final String QUIZ_STATUS = "quizStatus";
+    public static final String QUIZ_MOD_TIME = "quizModTime";
+
+    public static final String AUTHOR_ID = "authorId";
+    public static final String AUTHOR_NAME = "authorName";
+    public static final String AUTHOR_SURNAME = "authorSurname";
+    public static final String AUTHOR_EMAIL = "authorEmail";
+
+    public static final String COMMENT_TEXT = "commentText";
+    public static final String COMMENT_DATE = "commentDate";
+
+    public static final String MODERATOR_ID = "moderatorId";
+    public static final String MODERATOR_NAME = "moderatorName";
+    public static final String MODERATOR_SURNAME = "moderatorSurname";
+    public static final String MODERATOR_EMAIL = "moderatorEmail";
+
+    public static final String QUIZ_SHORT_ID = "qid";
+    public static final String QUIZ_SHORT_NAME = "qname";
+    public static final String QUIZ_SHORT_DATE = "qdate";
+    public static final String QUIZ_SHORT_CATEGORY_ID = "qcategoryid";
+    public static final String QUIZ_SHORT_STATUS = "qstatus";
+    public static final String QUIZ_SHORT_AUTHOR = "qauthor";
+    public static final String QUIZ_SHORT_DESCRIPTION = "qdescription";
+    public static final String QUIZ_MODIFICATION_TIME = "qmodificationtime";
+
+    public static final String CATEGORY_SHORT_NAME = "cname";
+
+    public static final String USER_SHORT_NAME = "uname";
+    public static final String USER_SHORT_SURNAME = "usurname";
+    public static final String USER_SHORT_EMAIL = "uemail";
+
+    public static final String COMMENT = "comment";
+    public static final String COUNT = "count";
+
+
     private static final String GET_QUIZZES_BY_STATUS_NAME = "SELECT * FROM (SELECT quizzes.category_id quizCategoryId, quizzes.modification_time quizModTime, quizzes.date quizDate, quizzes.description quizDescription, quizzes.status quizStatus, quizzes.id id, quizzes.name quizName, date quizDate, categories.name AS category, users.name AS authorName,users.id authorId, users.surname AS authorSurname, users.email AS authorEmail FROM quizzes INNER JOIN categories ON categories.id = category_id INNER JOIN users ON quizzes.author = users.id WHERE quizzes.status = ?::status_type) quizzes WHERE id NOT IN (SELECT quiz_id FROM moderators_quizzes)";
     private static final String GET_QUIZ_BY_ID_NAME = "SELECT sq.qid qid,sq.qauthor qauthor, u.id uid, u.name uname," +
             " u.surname usurname, u.email uemail, sq.qdate qdate,sq.qdescription qdescription,sq.qimage qimage," +
@@ -82,10 +124,6 @@ public class QuizDao {
     private static final String GET_TOP_POPULAR_QUIZZES_BY_CATEGORY = "SELECT quizzes.id, quizzes.name, quizzes.author, quizzes.category_id, quizzes.date, quizzes.description, quizzes.status, quizzes.modification_time, COUNT(games.id) AS gamescount FROM games INNER JOIN quizzes ON games.quiz_id = quizzes.id WHERE category_id=? GROUP BY quizzes.id ORDER BY gamescount DESC LIMIT ?";
     private static final String GET_RECENT_GAMES = "SELECT quizzes.id, quizzes.name, quizzes.author, quizzes.category_id, quizzes.date, quizzes.description, quizzes.status, quizzes.modification_time FROM games INNER JOIN quizzes ON games.quiz_id = quizzes.id WHERE games.id IN (SELECT games.id FROM score WHERE user_id = ?) AND games.status = 'FINISHED' GROUP BY quizzes.id, games.date ORDER BY games.date DESC LIMIT ?";
 
-    public static final String TABLE_QUIZZES = "quizzes";
-    private static final String GET_GAMES_CREATED_BY_USER_ID = "SELECT * FROM quizzes WHERE author = ?";
-    private static final String GET_QUIZ_CATEGORY_BY_CATEGORY_ID = "SELECT name FROM categories WHERE id = ?";
-
     private static final String COUNT_NUMBER_OF_PLAYED_GAMES = "SELECT COUNT(*) FROM quizzes WHERE status='ACTIVE'";
 
     private static final String REMOVE_TAGS = "DELETE FROM quizzes_tags WHERE quiz_id = ?";
@@ -111,35 +149,24 @@ public class QuizDao {
     private static final String DELETE_ALL_MODERATOR_QUIZ = "DELETE FROM moderators_quizzes WHERE moderator_id = ?";
     private static final String DELETE_MODERATOR_QUIZ = "DELETE FROM moderators_quizzes WHERE quiz_id = ?";
 
-    public List<Quiz> getGamesCreatedByUser(int userId) {
-
-        List<Quiz> quizzesCreatedByUser = jdbcTemplate.query(GET_GAMES_CREATED_BY_USER_ID, new Object[]{userId}, new QuizMapper());
-
-        if (quizzesCreatedByUser.isEmpty()) {
-            return Collections.emptyList();
-        }
-
-        return quizzesCreatedByUser;
-    }
-
     public List<QuizDto> getQuizzesByStatus(StatusType status) {
 
         List<QuizDto> quizDtos = jdbcTemplate.query(
                 GET_QUIZZES_BY_STATUS_NAME,
                 new Object[]{status.toString()}, (resultSet, i) -> {
                     QuizDto quiz = new QuizDto();
-                    quiz.setName(resultSet.getString("quizName"));
-                    quiz.setCategoryId(resultSet.getInt("quizCategoryId"));
-                    quiz.setStatus(StatusType.valueOf(resultSet.getString("quizStatus")));
-                    quiz.setCategory(resultSet.getString("category"));
-                    quiz.setId(resultSet.getInt("id"));
-                    quiz.setAuthor(resultSet.getInt("authorId"));
-                    quiz.setAuthorName(resultSet.getString("authorName"));
-                    quiz.setAuthorSurname(resultSet.getString("authorSurname"));
-                    quiz.setAuthorEmail(resultSet.getString("authorEmail"));
-                    quiz.setDate(resultSet.getDate("quizDate"));
-                    quiz.setDescription(resultSet.getString("quizDescription"));
-                    quiz.setModificationTime(resultSet.getTimestamp("quizModTime"));
+                    quiz.setName(resultSet.getString(QUIZ_NAME));
+                    quiz.setCategoryId(resultSet.getInt(QUIZ_CATEGORY_ID));
+                    quiz.setStatus(StatusType.valueOf(resultSet.getString(QUIZ_STATUS)));
+                    quiz.setCategory(resultSet.getString(CATEGORY));
+                    quiz.setId(resultSet.getInt(ID));
+                    quiz.setAuthor(resultSet.getInt(AUTHOR_ID));
+                    quiz.setAuthorName(resultSet.getString(AUTHOR_NAME));
+                    quiz.setAuthorSurname(resultSet.getString(AUTHOR_SURNAME));
+                    quiz.setAuthorEmail(resultSet.getString(AUTHOR_EMAIL));
+                    quiz.setDate(resultSet.getDate(QUIZ_DATE));
+                    quiz.setDescription(resultSet.getString(QUIZ_DESCRIPTION));
+                    quiz.setModificationTime(resultSet.getTimestamp(QUIZ_MOD_TIME));
 
                     return quiz;
                 });
@@ -151,8 +178,8 @@ public class QuizDao {
         return quizDtos;
     }
 
-    public List<QuizDto> getAllQuizzes(int pageSize, int pageNumber, int userId) {
-        List<Quiz> quizzes = jdbcTemplate.query(GET_ALL_QUIZZES, new Object[]{pageSize, pageNumber * pageSize}, new QuizMapper());
+    public List<QuizDto> getAllQuizzes(int limit, int offset, int userId) {
+        List<Quiz> quizzes = jdbcTemplate.query(GET_ALL_QUIZZES, new Object[]{limit, limit * offset}, new QuizMapper());
 
         if (quizzes.isEmpty()) {
             return Collections.emptyList();
@@ -179,18 +206,18 @@ public class QuizDao {
                     GET_QUIZ_BY_ID_NAME,
                     new Object[]{id}, (resultSet, i) -> {
                         QuizDto quiz = new QuizDto();
-                        quiz.setName(resultSet.getString("qname"));
-                        quiz.setCategoryId(resultSet.getInt("qcategoryid"));
-                        quiz.setStatus(StatusType.valueOf(resultSet.getString("qstatus")));
-                        quiz.setCategory(resultSet.getString("cname"));
-                        quiz.setId(resultSet.getInt("qid"));
-                        quiz.setAuthor(resultSet.getInt("qauthor"));
-                        quiz.setAuthorName(resultSet.getString("uname"));
-                        quiz.setAuthorSurname(resultSet.getString("usurname"));
-                        quiz.setAuthorEmail(resultSet.getString("uemail"));
-                        quiz.setDate(resultSet.getDate("qdate"));
-                        quiz.setDescription(resultSet.getString("qdescription"));
-                        quiz.setModificationTime(resultSet.getTimestamp("qmodificationtime"));
+                        quiz.setName(resultSet.getString(QUIZ_SHORT_NAME));
+                        quiz.setCategoryId(resultSet.getInt(QUIZ_SHORT_CATEGORY_ID));
+                        quiz.setStatus(StatusType.valueOf(resultSet.getString(QUIZ_SHORT_STATUS)));
+                        quiz.setCategory(resultSet.getString(CATEGORY_SHORT_NAME));
+                        quiz.setId(resultSet.getInt(QUIZ_SHORT_ID));
+                        quiz.setAuthor(resultSet.getInt(QUIZ_SHORT_AUTHOR));
+                        quiz.setAuthorName(resultSet.getString(USER_SHORT_NAME));
+                        quiz.setAuthorSurname(resultSet.getString(USER_SHORT_SURNAME));
+                        quiz.setAuthorEmail(resultSet.getString(USER_SHORT_EMAIL));
+                        quiz.setDate(resultSet.getDate(QUIZ_SHORT_DATE));
+                        quiz.setDescription(resultSet.getString(QUIZ_SHORT_DESCRIPTION));
+                        quiz.setModificationTime(resultSet.getTimestamp(QUIZ_MODIFICATION_TIME));
 
                         return quiz;
                     }
@@ -200,7 +227,7 @@ public class QuizDao {
             }
         } catch (DataAccessException e) {
             e.printStackTrace();
-            throw new DatabaseException(String.format("Find quiz by id '%s' database error occured", id));
+            throw new DatabaseException(String.format("Find quiz by id '%s' database error occurred", id));
         }
 
         return quizzes.get(0);
@@ -215,14 +242,14 @@ public class QuizDao {
                     new Object[]{id}, (resultSet, i) -> {
                         Quiz quiz = new Quiz();
 
-                        quiz.setId(resultSet.getInt(QUIZ_ID));
-                        quiz.setName(resultSet.getString(QUIZ_NAME));
-                        quiz.setAuthor(resultSet.getInt(QUIZ_AUTHOR));
-                        quiz.setCategoryId(resultSet.getInt(QUIZ_CATEGORY));
-                        quiz.setDate(resultSet.getDate(QUIZ_DATE));
-                        quiz.setDescription(resultSet.getString(QUIZ_DESCRIPTION));
-                        quiz.setStatus(StatusType.valueOf(resultSet.getString(QUIZ_STATUS)));
-                        quiz.setModificationTime(resultSet.getTimestamp(QUIZ_MODIFICATION_TIME));
+                        quiz.setId(resultSet.getInt(ID));
+                        quiz.setName(resultSet.getString(NAME));
+                        quiz.setAuthor(resultSet.getInt(AUTHOR));
+                        quiz.setCategoryId(resultSet.getInt(CATEGORY));
+                        quiz.setDate(resultSet.getDate(DATE));
+                        quiz.setDescription(resultSet.getString(DESCRIPTION));
+                        quiz.setStatus(StatusType.valueOf(resultSet.getString(STATUS)));
+                        quiz.setModificationTime(resultSet.getTimestamp(MODIFICATION_TIME));
                         return quiz;
                     }
             );
@@ -248,12 +275,6 @@ public class QuizDao {
         }
 
         return quizzesCreatedByUser;
-    }
-
-    public String getCategoryNameByCategoryId(int categoryId) {
-        List<String> categoryNames = jdbcTemplate.query(GET_QUIZ_CATEGORY_BY_CATEGORY_ID, new Object[]{categoryId}, (resultSet, i) -> resultSet.getString("name"));
-
-        return categoryNames.get(0);
     }
 
     public List<Quiz> findQuizzesByName(String name) {
@@ -318,7 +339,7 @@ public class QuizDao {
         return jdbcTemplate.queryForObject(
                 GET_QUIZ_IMAGE_BY_QUIZ_ID,
                 new Object[]{quizId},
-                (resultSet, i) -> resultSet.getString("image"));
+                (resultSet, i) -> resultSet.getString(IMAGE));
     }
 
     @Transactional
@@ -332,7 +353,7 @@ public class QuizDao {
         try {
             jdbcTemplate.update(connection -> {
                 PreparedStatement ps = connection
-                        .prepareStatement(INSERT_QUIZ, new String[]{"id"});
+                        .prepareStatement(INSERT_QUIZ, new String[]{ID});
                 ps.setString(1, entity.getName());
                 ps.setInt(2, entity.getAuthor());
                 ps.setInt(3, entity.getCategoryId());
@@ -345,6 +366,8 @@ public class QuizDao {
         } catch (DataAccessException e) {
             throw new DatabaseException("Database access exception while quiz insert");
         }
+
+        if (keyHolder.getKey() == null) return null;
 
         entity.setId(keyHolder.getKey().intValue());
 
@@ -359,8 +382,7 @@ public class QuizDao {
         return entity;
     }
 
-    @Transactional
-    QuizDto update(QuizDto entity) {
+    private QuizDto update(QuizDto entity) {
         if (entity.isChanged()) {
             try {
                 jdbcTemplate.update(UPDATE_QUIZ,
@@ -442,14 +464,14 @@ public class QuizDao {
                 new Object[]{limit}, (resultSet, i) -> {
                     Quiz quiz = new Quiz();
 
-                    quiz.setId(resultSet.getInt(QUIZ_ID));
-                    quiz.setName(resultSet.getString(QUIZ_NAME));
-                    quiz.setAuthor(resultSet.getInt(QUIZ_AUTHOR));
-                    quiz.setCategoryId(resultSet.getInt("category_id"));
-                    quiz.setDate(resultSet.getDate(QUIZ_DATE));
-                    quiz.setDescription(resultSet.getString(QUIZ_DESCRIPTION));
-                    quiz.setStatus(StatusType.valueOf(resultSet.getString(QUIZ_STATUS)));
-                    quiz.setModificationTime(resultSet.getTimestamp(QUIZ_MODIFICATION_TIME));
+                    quiz.setId(resultSet.getInt(ID));
+                    quiz.setName(resultSet.getString(NAME));
+                    quiz.setAuthor(resultSet.getInt(AUTHOR));
+                    quiz.setCategoryId(resultSet.getInt(CATEGORY_ID));
+                    quiz.setDate(resultSet.getDate(DATE));
+                    quiz.setDescription(resultSet.getString(DESCRIPTION));
+                    quiz.setStatus(StatusType.valueOf(resultSet.getString(STATUS)));
+                    quiz.setModificationTime(resultSet.getTimestamp(MODIFICATION_TIME));
                     return quiz;
                 }
         );
@@ -466,13 +488,13 @@ public class QuizDao {
                 new Object[]{categoryId, limit}, (resultSet, i) -> {
                     Quiz quiz = new Quiz();
 
-                    quiz.setId(resultSet.getInt(QUIZ_ID));
-                    quiz.setName(resultSet.getString(QUIZ_NAME));
-                    quiz.setAuthor(resultSet.getInt(QUIZ_AUTHOR));
-                    quiz.setDate(resultSet.getDate(QUIZ_DATE));
-                    quiz.setDescription(resultSet.getString(QUIZ_DESCRIPTION));
-                    quiz.setStatus(StatusType.valueOf(resultSet.getString(QUIZ_STATUS)));
-                    quiz.setModificationTime(resultSet.getTimestamp(QUIZ_MODIFICATION_TIME));
+                    quiz.setId(resultSet.getInt(ID));
+                    quiz.setName(resultSet.getString(NAME));
+                    quiz.setAuthor(resultSet.getInt(AUTHOR));
+                    quiz.setDate(resultSet.getDate(DATE));
+                    quiz.setDescription(resultSet.getString(DESCRIPTION));
+                    quiz.setStatus(StatusType.valueOf(resultSet.getString(STATUS)));
+                    quiz.setModificationTime(resultSet.getTimestamp(MODIFICATION_TIME));
                     return quiz;
                 }
         );
@@ -489,14 +511,14 @@ public class QuizDao {
                 new Object[]{userId, limit}, (resultSet, i) -> {
                     Quiz quiz = new Quiz();
 
-                    quiz.setId(resultSet.getInt(QUIZ_ID));
-                    quiz.setName(resultSet.getString(QUIZ_NAME));
-                    quiz.setAuthor(resultSet.getInt(QUIZ_AUTHOR));
-                    quiz.setCategoryId(resultSet.getInt("category_id"));
-                    quiz.setDate(resultSet.getDate(QUIZ_DATE));
-                    quiz.setDescription(resultSet.getString(QUIZ_DESCRIPTION));
-                    quiz.setStatus(StatusType.valueOf(resultSet.getString(QUIZ_STATUS)));
-                    quiz.setModificationTime(resultSet.getTimestamp(QUIZ_MODIFICATION_TIME));
+                    quiz.setId(resultSet.getInt(ID));
+                    quiz.setName(resultSet.getString(NAME));
+                    quiz.setAuthor(resultSet.getInt(AUTHOR));
+                    quiz.setCategoryId(resultSet.getInt(CATEGORY_ID));
+                    quiz.setDate(resultSet.getDate(DATE));
+                    quiz.setDescription(resultSet.getString(DESCRIPTION));
+                    quiz.setStatus(StatusType.valueOf(resultSet.getString(STATUS)));
+                    quiz.setModificationTime(resultSet.getTimestamp(MODIFICATION_TIME));
                     return quiz;
                 }
         );
@@ -525,14 +547,14 @@ public class QuizDao {
                 new Object[]{userId, limit}, (resultSet, i) -> {
                     Quiz quiz = new Quiz();
 
-                    quiz.setId(resultSet.getInt(QUIZ_ID));
-                    quiz.setName(resultSet.getString(QUIZ_NAME));
-                    quiz.setAuthor(resultSet.getInt(QUIZ_AUTHOR));
-                    quiz.setCategoryId(resultSet.getInt(QUIZ_CATEGORY));
-                    quiz.setDate(resultSet.getDate(QUIZ_DATE));
-                    quiz.setDescription(resultSet.getString(QUIZ_DESCRIPTION));
-                    quiz.setStatus(StatusType.valueOf(resultSet.getString(QUIZ_STATUS)));
-                    quiz.setModificationTime(resultSet.getTimestamp(QUIZ_MODIFICATION_TIME));
+                    quiz.setId(resultSet.getInt(ID));
+                    quiz.setName(resultSet.getString(NAME));
+                    quiz.setAuthor(resultSet.getInt(AUTHOR));
+                    quiz.setCategoryId(resultSet.getInt(CATEGORY));
+                    quiz.setDate(resultSet.getDate(DATE));
+                    quiz.setDescription(resultSet.getString(DESCRIPTION));
+                    quiz.setStatus(StatusType.valueOf(resultSet.getString(STATUS)));
+                    quiz.setModificationTime(resultSet.getTimestamp(MODIFICATION_TIME));
                     return quiz;
                 }
         );
@@ -579,7 +601,7 @@ public class QuizDao {
                 GET_TAGS_BY_QUIZ_ID,
                 new Object[]{quizId}, (resultSet, i) -> {
                     Tag tag = new Tag();
-                    tag.setName(resultSet.getString("name"));
+                    tag.setName(resultSet.getString(NAME));
                     return tag;
                 });
     }
@@ -588,7 +610,7 @@ public class QuizDao {
         List<Integer> answer = jdbcTemplate.query(
                 IS_FAVORITE_QUIZ,
                 new Object[]{quizId, userId},
-                (resultSet, i) -> resultSet.getInt("quiz_id")
+                (resultSet, i) -> resultSet.getInt(QUIZ_ID)
         );
 
         return !answer.isEmpty();
@@ -632,7 +654,7 @@ public class QuizDao {
         try {
             jdbcTemplate.update(connection -> {
                 PreparedStatement ps = connection
-                        .prepareStatement(ADD_MODERATOR_COMMENT, new String[]{"id"});
+                        .prepareStatement(ADD_MODERATOR_COMMENT, new String[]{ID});
                 ps.setInt(1, comment.getQuizId());
                 ps.setInt(2, comment.getModeratorId());
                 ps.setString(3, comment.getComment());
@@ -667,7 +689,7 @@ public class QuizDao {
 
     public int getNumberOfRecord() {
         return jdbcTemplate.queryForObject(COUNT_NUMBER_OF_PLAYED_GAMES,
-                (resultSet, i) -> resultSet.getInt("count"));
+                (resultSet, i) -> resultSet.getInt(COUNT));
     }
 
     public boolean assignModeratorById(int quizId, int moderatorId) {
@@ -680,13 +702,13 @@ public class QuizDao {
                 GET_MODERATORS_QUIZZES,
                 new Object[]{moderatorId}, (resultSet, i) -> {
                     QuizDto quiz = new QuizDto();
-                    quiz.setName(resultSet.getString("quizName"));
-                    quiz.setId(resultSet.getInt("id"));
-                    quiz.setDate(resultSet.getDate("quizDate"));
-                    quiz.setAuthorName(resultSet.getString("authorName"));
-                    quiz.setAuthorSurname(resultSet.getString("authorSurname"));
-                    quiz.setAuthorEmail(resultSet.getString("authorEmail"));
-                    quiz.setCategory(resultSet.getString("category"));
+                    quiz.setName(resultSet.getString(QUIZ_NAME));
+                    quiz.setId(resultSet.getInt(ID));
+                    quiz.setDate(resultSet.getDate(QUIZ_DATE));
+                    quiz.setAuthorName(resultSet.getString(AUTHOR_NAME));
+                    quiz.setAuthorSurname(resultSet.getString(AUTHOR_SURNAME));
+                    quiz.setAuthorEmail(resultSet.getString(AUTHOR_EMAIL));
+                    quiz.setCategory(resultSet.getString(CATEGORY));
 
                     return quiz;
                 });
@@ -703,13 +725,13 @@ public class QuizDao {
                 GET_FILTERED_PENDING_QUIZZES,
                 new Object[]{searchText, searchText, searchText, searchText}, (resultSet, i) -> {
                     QuizDto quiz = new QuizDto();
-                    quiz.setName(resultSet.getString("quizName"));
-                    quiz.setId(resultSet.getInt("id"));
-                    quiz.setDate(resultSet.getDate("quizDate"));
-                    quiz.setAuthorName(resultSet.getString("authorName"));
-                    quiz.setAuthorSurname(resultSet.getString("authorSurname"));
-                    quiz.setAuthorEmail(resultSet.getString("authorEmail"));
-                    quiz.setCategory(resultSet.getString("category"));
+                    quiz.setName(resultSet.getString(QUIZ_NAME));
+                    quiz.setId(resultSet.getInt(ID));
+                    quiz.setDate(resultSet.getDate(QUIZ_DATE));
+                    quiz.setAuthorName(resultSet.getString(AUTHOR_NAME));
+                    quiz.setAuthorSurname(resultSet.getString(AUTHOR_SURNAME));
+                    quiz.setAuthorEmail(resultSet.getString(AUTHOR_EMAIL));
+                    quiz.setCategory(resultSet.getString(CATEGORY));
 
                     return quiz;
                 });
@@ -727,13 +749,13 @@ public class QuizDao {
                 GET_COMMENTS,
                 new Object[]{quizId}, (resultSet, i) -> {
                     ModeratorCommentDto comment = new ModeratorCommentDto();
-                    comment.setQuizId(resultSet.getInt("quizId"));
-                    comment.setComment(resultSet.getString("commentText"));
-                    comment.setCommentDate(resultSet.getDate("commentDate"));
-                    comment.setModeratorId(resultSet.getInt("moderatorId"));
-                    comment.setModeratorName(resultSet.getString("moderatorName"));
-                    comment.setModeratorSurname(resultSet.getString("moderatorSurname"));
-                    comment.setModeratorEmail(resultSet.getString("moderatorEmail"));
+                    comment.setQuizId(resultSet.getInt(QUIZ_ID));
+                    comment.setComment(resultSet.getString(COMMENT_TEXT));
+                    comment.setCommentDate(resultSet.getDate(COMMENT_DATE));
+                    comment.setModeratorId(resultSet.getInt(MODERATOR_ID));
+                    comment.setModeratorName(resultSet.getString(MODERATOR_NAME));
+                    comment.setModeratorSurname(resultSet.getString(MODERATOR_SURNAME));
+                    comment.setModeratorEmail(resultSet.getString(MODERATOR_EMAIL));
                     return comment;
                 });
         if (comments.isEmpty()) {
@@ -742,7 +764,7 @@ public class QuizDao {
         return comments;
     }
 
-    public void unsignQuizById(int id) {
+    public void unassignQuizById(int id) {
         jdbcTemplate.update(DELETE_MODERATOR_QUIZ, id);
     }
 
@@ -762,10 +784,10 @@ public class QuizDao {
     public List<RejectMessage> getRejectMessages(int quizId) {
         return jdbcTemplate.query(GET_REJECTED_MESSAGES,
                 new Object[]{quizId},
-                ((resultSet, i) -> new RejectMessage(resultSet.getString("comment"), resultSet.getDate("date"))));
+                ((resultSet, i) -> new RejectMessage(resultSet.getString(COMMENT), resultSet.getDate(DATE))));
     }
 
-    public void unsignAllQuizById(int moderatorId) {
+    public void unassignAllQuizById(int moderatorId) {
         jdbcTemplate.update(DELETE_ALL_MODERATOR_QUIZ, moderatorId);
     }
 }

@@ -1,6 +1,7 @@
 package com.quiz.dto;
 
 import com.quiz.entities.StatusType;
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -10,6 +11,7 @@ import java.util.List;
 
 @Data
 @NoArgsConstructor
+@AllArgsConstructor
 public class QuizCheckDto{
 
     private int id;
@@ -26,20 +28,6 @@ public class QuizCheckDto{
     private String authorEmail;
     private List<QuestionCheckDto> questions;
 
-    public QuizCheckDto(int id, String name, int author, int categoryId, Date date, String description, StatusType status, Timestamp modificationTime, String category,String authorName,String authorSurname, String authorEmail) {
-        this.id = id;
-        this.name = name;
-        this.author = author;
-        this.categoryId = categoryId;
-        this.date = date;
-        this.description = description;
-        this.status = status;
-        this.modificationTime = modificationTime;
-        this.category=category;
-        this.authorName=authorName;
-        this.authorSurname=authorSurname;
-        this.authorEmail=authorEmail;
-    }
     public QuizCheckDto(QuizDto quizDto,List<QuestionCheckDto> questions){
         this.id = quizDto.getId();
         this.name = quizDto.getName();

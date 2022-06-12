@@ -7,15 +7,15 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 public class CategoryMapper implements RowMapper<Category> {
-    public static final String CATEGORY_ID = "id";
-    public static final String CATEGORY_NAME = "name";
+    public static final String ID = "id";
+    public static final String NAME = "name";
 
     @Override
     public Category mapRow(ResultSet resultSet, int i) throws SQLException {
         Category category = new Category();
 
-        category.setId(resultSet.getInt(CATEGORY_ID));
-        category.setName(resultSet.getString(CATEGORY_NAME));
+        category.setId(resultSet.getInt(ID));
+        category.setName(resultSet.getString(NAME));
 
         return category;
     }

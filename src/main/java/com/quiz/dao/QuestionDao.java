@@ -15,7 +15,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.sql.PreparedStatement;
 import java.util.List;
-import java.util.Objects;
 
 import static com.quiz.dao.mapper.QuestionMapper.*;
 
@@ -61,11 +60,11 @@ public class QuestionDao {
                 (resultSet, i) -> {
                     Question question = new Question();
 
-                    question.setId(resultSet.getInt(QUESTION_ID));
-                    question.setQuizId(resultSet.getInt(QUESTION_QUIZ_ID));
-                    question.setType(QuestionType.valueOf(resultSet.getString(QUESTION_TYPE)));
-                    question.setText(resultSet.getString(QUESTION_TEXT));
-                    question.setActive(resultSet.getBoolean(QUESTION_ACTIVE));
+                    question.setId(resultSet.getInt(ID));
+                    question.setQuizId(resultSet.getInt(QUIZ_ID));
+                    question.setType(QuestionType.valueOf(resultSet.getString(TYPE)));
+                    question.setText(resultSet.getString(TEXT));
+                    question.setActive(resultSet.getBoolean(ACTIVE));
 
                     return question;
                 }
@@ -109,6 +108,8 @@ public class QuestionDao {
             throw new DatabaseException("Database access exception while question insert");
         }
 
+        if (keyHolder.getKey() == null) return;
+
         for (int i = entity.getAnswerList().size() - 1; i >= 0; i--) {
             if (entity.getType() == QuestionType.SEQUENCE && i != entity.getAnswerList().size() - 1) {
                 entity.getAnswerList().get(i).setNextAnswerId(entity.getAnswerList().get(i + 1).getId());
@@ -116,7 +117,7 @@ public class QuestionDao {
             answerDao.insert(entity.getAnswerList().get(i), keyHolder.getKey().intValue());
         }
 
-        entity.setId(Objects.requireNonNull(keyHolder.getKey()).intValue());
+        entity.setId(keyHolder.getKey().intValue());
     }
 
     @Transactional
@@ -137,8 +138,8 @@ public class QuestionDao {
         if (entity.isChangedType()) {
             answerDao.deleteAnswersByQuestionId(entity.getId());
         } else {
-            entity.getAnswerList().removeIf(item->{
-                if(item.isDeleted()){
+            entity.getAnswerList().removeIf(item -> {
+                if (item.isDeleted()) {
                     answerDao.delete(item);
                     return true;
                 }
@@ -169,10 +170,10 @@ public class QuestionDao {
                 new Object[]{quizId},
                 (resultSet, i) -> {
                     Question question = new Question();
-                    question.setId(resultSet.getInt(QUESTION_ID));
-                    question.setType(QuestionType.valueOf(resultSet.getString(QUESTION_TYPE)));
-                    question.setText(resultSet.getString(QUESTION_TEXT));
-                    question.setImage(resultSet.getString(QUESTION_IMAGE));
+                    question.setId(resultSet.getInt(ID));
+                    question.setType(QuestionType.valueOf(resultSet.getString(TYPE)));
+                    question.setText(resultSet.getString(TEXT));
+                    question.setImage(resultSet.getString(IMAGE));
 
                     return question;
                 }
@@ -184,12 +185,12 @@ public class QuestionDao {
                 new Object[]{quizId},
                 (resultSet, i) -> {
                     QuestionDto questionDto = new QuestionDto();
-                    questionDto.setId(resultSet.getInt(QUESTION_ID));
-                    questionDto.setQuizId(resultSet.getInt(QUESTION_QUIZ_ID));
-                    questionDto.setType(QuestionType.valueOf(resultSet.getString(QUESTION_TYPE)));
-                    questionDto.setText(resultSet.getString(QUESTION_TEXT));
+                    questionDto.setId(resultSet.getInt(ID));
+                    questionDto.setQuizId(resultSet.getInt(QUIZ_ID));
+                    questionDto.setType(QuestionType.valueOf(resultSet.getString(TYPE)));
+                    questionDto.setText(resultSet.getString(TEXT));
                     questionDto.setImage(resultSet.getString("image"));
-                    questionDto.setActive(resultSet.getBoolean(QUESTION_ACTIVE));
+                    questionDto.setActive(resultSet.getBoolean(ACTIVE));
 
                     return questionDto;
                 }

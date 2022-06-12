@@ -16,7 +16,7 @@ import java.util.Map;
 
 @RestController
 @CrossOrigin
-@RequestMapping("/play")
+@RequestMapping("/quizzes/play")
 public class GameController {
 
     @Autowired
@@ -24,7 +24,7 @@ public class GameController {
     @Autowired
     private SimpMessagingTemplate template;
 
-    private static final String GAME_URL = "/play/game/%s";
+    private static final String GAME_URL = "/quizzes/play/game/%s";
 
     @PostMapping("/session")
     public int addGameSession(@RequestBody GameSessionDto gameSessionDto) {

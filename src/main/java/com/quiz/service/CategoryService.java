@@ -16,6 +16,10 @@ public class CategoryService {
         return categoryDao.findByName(name);
     }
 
+    public Category findById(int categoryId) {
+        return categoryDao.getCategoryByCategoryId(categoryId);
+    }
+
     public List<Category> getAllCategories() {
         return categoryDao.getAllCategories();
     }

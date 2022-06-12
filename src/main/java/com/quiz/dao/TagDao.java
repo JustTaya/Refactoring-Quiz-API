@@ -14,6 +14,8 @@ import java.sql.PreparedStatement;
 import java.util.Collections;
 import java.util.List;
 
+import static com.quiz.dao.mapper.TagMapper.ID;
+
 @Repository
 @RequiredArgsConstructor
 public class TagDao {
@@ -86,7 +88,7 @@ public class TagDao {
         try {
             jdbcTemplate.update(connection -> {
                 PreparedStatement ps = connection
-                        .prepareStatement(INSERT_TAG, new String[]{"id"});
+                        .prepareStatement(INSERT_TAG, new String[]{ID});
                 ps.setString(1, entity.getName());
                 ps.setString(2, entity.getName());
                 return ps;

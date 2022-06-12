@@ -1,6 +1,5 @@
 package com.quiz.security;
 
-import com.quiz.entities.Role;
 import com.quiz.entities.User;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -12,24 +11,20 @@ import java.util.Collections;
 
 public class UserPrincipal implements UserDetails {
 
-    private int id;
+    private final String password;
 
-    private String password;
+    private final String email;
 
-    private String email;
-
-    private Role role;
+    public static final String ROLE_USER = "ROLE_USER";
 
     public UserPrincipal(User user) {
-        id = user.getId();
         password = user.getPassword();
         email = user.getEmail();
-        role=user.getRole();
     }
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return Collections.singletonList(new SimpleGrantedAuthority("ROLE_USER"));// TODO: 10.04.2020 create const
+        return Collections.singletonList(new SimpleGrantedAuthority(ROLE_USER));
     }
 
     @Override

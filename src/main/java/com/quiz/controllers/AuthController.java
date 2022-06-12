@@ -17,9 +17,9 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 public class AuthController {
 
-
     private final AuthService authService;
     private final UserService userService;
+
     @PostMapping("/register")
     public ResponseEntity<UserDto> register(@RequestBody User user){
         return ResponseEntity.status(HttpStatus.CREATED)
