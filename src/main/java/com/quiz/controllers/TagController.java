@@ -26,7 +26,7 @@ public class TagController {
         return ResponseEntity.ok(tagService.findTagByName(tagName));
     }
 
-    @GetMapping("/regex_name/{regexName}")
+    @GetMapping("/regex-name/{regexName}")
     public ResponseEntity<List<Tag>> getTagsByName(@PathVariable String regexName) {
         return ResponseEntity.ok(tagService.findTagsByName(regexName));
 
