@@ -20,7 +20,7 @@ public class AdminController {
     private final AdminService adminService;
     private final PaginationService paginationService;
 
-    @PostMapping("/admin")
+    @PostMapping
     public ResponseEntity<UserDto> addAdminUser(@RequestBody User user) {
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(adminService.addAdminUser(user));

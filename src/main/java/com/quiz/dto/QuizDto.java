@@ -5,6 +5,7 @@ import com.quiz.entities.Tag;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import javax.validation.constraints.NotNull;
 import java.sql.Timestamp;
 import java.sql.Date;
 import java.util.List;
@@ -12,6 +13,7 @@ import java.util.List;
 @Data
 @NoArgsConstructor
 public class QuizDto {
+    @NotNull
     private Integer id;
     private String name;
     private String image;
