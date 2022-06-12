@@ -35,11 +35,6 @@ public class UserService {
         return userDao.findProfileInfoByUserId(id);
     }
 
-    public List<User> findFriendByUserId(int id, String sort) {
-        return userDao.findFriendByUserId(id, sort);
-    }
-
-
     public boolean updateUser(User user) {
         return userDao.updateUser(user);
     }
@@ -108,10 +103,6 @@ public class UserService {
 
     public List<User> getRatingInRange(int userId, int range) {
         return userDao.getRatingInRange(userId, range);
-    }
-
-    public List<User> filterFriendByUserId(String userSearch, int userId, String sort) {
-        return userDao.filterFriendByUserId(userSearch, userId, sort);
     }
 
     public boolean activateUser(String code) {

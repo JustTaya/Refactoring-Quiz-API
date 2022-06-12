@@ -2,8 +2,8 @@ package com.quiz.controllers;
 
 import com.quiz.entities.ResponcePaginatedList;
 import com.quiz.entities.User;
+import com.quiz.service.FriendsService;
 import com.quiz.service.PaginationService;
-import com.quiz.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -15,7 +15,7 @@ import java.util.List;
 @RequiredArgsConstructor
 @CrossOrigin
 public class FriendsController {
-    private final UserService userRepo;
+    private final FriendsService userRepo;
     private final PaginationService paginationService;
 
     @GetMapping("/{userId}")
