@@ -1,8 +1,8 @@
 package com.quiz.service;
 
-import com.quiz.dao.UserDao;
-import com.quiz.dto.UserDto;
-import com.quiz.entities.User;
+import com.quiz.data.dao.UserDao;
+import com.quiz.data.dto.UserDto;
+import com.quiz.data.entities.User;
 import com.quiz.exceptions.EmailExistException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;

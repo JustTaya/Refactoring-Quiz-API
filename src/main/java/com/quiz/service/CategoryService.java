@@ -1,7 +1,7 @@
 package com.quiz.service;
 
-import com.quiz.dao.CategoryDao;
-import com.quiz.entities.Category;
+import com.quiz.data.dao.CategoryDao;
+import com.quiz.data.entities.Category;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 

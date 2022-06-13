@@ -1,10 +1,10 @@
 package com.quiz.service;
 
-import com.quiz.dao.AnswerDao;
-import com.quiz.dao.QuestionDao;
-import com.quiz.entities.Answer;
-import com.quiz.entities.Question;
-import com.quiz.entities.QuestionType;
+import com.quiz.data.dao.AnswerDao;
+import com.quiz.data.dao.QuestionDao;
+import com.quiz.data.entities.Answer;
+import com.quiz.data.entities.Question;
+import com.quiz.data.entities.QuestionType;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 

@@ -1,9 +1,9 @@
 package com.quiz.service;
 
-import com.quiz.dao.UserDao;
-import com.quiz.entities.NotificationStatus;
-import com.quiz.entities.User;
-import com.quiz.exceptions.NotFoundException;
+import com.quiz.data.dao.UserDao;
+import com.quiz.data.entities.NotificationStatus;
+import com.quiz.data.entities.User;
+import com.quiz.exceptions.UserNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
@@ -22,7 +22,7 @@ public class UserService {
     public User findByEmail(String email) {
         User userDB = userDao.findByEmail(email);
         if (userDB == null) {
-            throw new NotFoundException("user", "email", email);
+            throw new UserNotFoundException("email", email);
         }
         return userDB;
     }

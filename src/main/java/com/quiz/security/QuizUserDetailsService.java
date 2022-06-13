@@ -1,6 +1,6 @@
 package com.quiz.security;
 
-import com.quiz.entities.User;
+import com.quiz.data.entities.User;
 import com.quiz.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetails;
