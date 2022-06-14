@@ -34,6 +34,8 @@ public class QuizDao {
     private final TagDao tagDao;
     private final QuizConverter quizConverter;
 
+    private static final String RESOURCE = "quiz";
+
     public static final String QUIZ_ID = "quiz_id";
     public static final String QUIZ_NAME = "quizName";
     public static final String QUIZ_IMAGE = "quizImage";
@@ -226,8 +228,7 @@ public class QuizDao {
                 return null;
             }
         } catch (DataAccessException e) {
-            e.printStackTrace();
-            throw new DatabaseException(String.format("Find quiz by id '%s' database error occurred", id));
+            throw DatabaseException.resourceSearchException(RESOURCE, "'quizId': " + id);
         }
 
         return quizzes.get(0);
@@ -257,7 +258,7 @@ public class QuizDao {
                 return null;
             }
         } catch (DataAccessException e) {
-            throw new DatabaseException(String.format("Find quiz by id '%s' database error occurred", id));
+            throw DatabaseException.resourceSearchException(RESOURCE, "'quizId': " + id);
         }
 
         return quizzes.get(0);
@@ -364,7 +365,7 @@ public class QuizDao {
                 return ps;
             }, keyHolder);
         } catch (DataAccessException e) {
-            throw new DatabaseException("Database access exception while quiz insert");
+            throw DatabaseException.accessExceptionOnInsert(RESOURCE);
         }
 
         if (keyHolder.getKey() == null) return null;
@@ -396,7 +397,7 @@ public class QuizDao {
                         entity.getId()
                 );
             } catch (DataAccessException e) {
-                throw new DatabaseException("Database access exception while quiz insert");
+                throw DatabaseException.accessExceptionOnInsert(RESOURCE);
             }
         }
 
@@ -449,7 +450,7 @@ public class QuizDao {
         try {
             affectedRowNumber = jdbcTemplate.update(ADD_TAG_TO_QUIZ, quizId, tagId);
         } catch (DataAccessException e) {
-            throw new DatabaseException("Database access exception while quiz-tag insert");
+            throw DatabaseException.accessExceptionOnInsert("quiz-tag");
         }
         return affectedRowNumber > 0;
     }
@@ -662,7 +663,7 @@ public class QuizDao {
                 return ps;
             }, keyHolder);
         } catch (DataAccessException e) {
-            throw new DatabaseException("Database access exception while comment insert");
+            throw DatabaseException.accessExceptionOnInsert(COMMENT);
         }
         comment.setId(Objects.requireNonNull(keyHolder.getKey()).intValue());
         return comment;

@@ -23,6 +23,8 @@ public class UserDao {
 
     private final JdbcTemplate jdbcTemplate;
 
+    private static final String RESOURCE = "user";
+
     public static final String IMAGE = "image";
 
     private static final String GET_USER_ROLE_BY_EMAIL = "SELECT role FROM users WHERE email = ?";
@@ -70,7 +72,7 @@ public class UserDao {
                 return null;
             }
         } catch (DataAccessException e) {
-            throw new DatabaseException(String.format("Find user by email '%s' database error occurred", email));
+            throw DatabaseException.resourceSearchException(RESOURCE, "'email': " + email);
         }
 
         return users.get(0);
@@ -89,7 +91,7 @@ public class UserDao {
                 return null;
             }
         } catch (DataAccessException e) {
-            throw new DatabaseException(String.format("Find user by id '%s' database error occurred", id));
+            throw DatabaseException.resourceSearchException(RESOURCE, "'userId': " + id);
         }
 
         return users.get(0);
@@ -100,7 +102,7 @@ public class UserDao {
         try {
             jdbcTemplate.update(INSERT_USER, entity.getEmail(), entity.getPassword(), entity.getRole().toString());
         } catch (DataAccessException e) {
-            throw new DatabaseException("Database access exception while user insert");
+            throw DatabaseException.accessExceptionOnInsert(RESOURCE);
         }
 
         return entity;
@@ -284,7 +286,7 @@ public class UserDao {
                 return null;
             }
         } catch (DataAccessException e) {
-            throw new DatabaseException(String.format("Find user by password '%s' database error occurred", code));
+            throw DatabaseException.resourceSearchException(RESOURCE, "'activationCode': " + code);
         }
         return users.get(0);
     }

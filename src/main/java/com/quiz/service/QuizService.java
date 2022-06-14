@@ -6,11 +6,11 @@ import com.quiz.data.entities.Quiz;
 import com.quiz.data.entities.RejectMessage;
 import com.quiz.data.entities.StatusType;
 import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 
-@Component
+@Service
 @RequiredArgsConstructor
 public class QuizService {
 

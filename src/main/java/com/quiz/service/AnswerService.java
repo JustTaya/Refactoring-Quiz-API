@@ -3,12 +3,12 @@ package com.quiz.service;
 import com.quiz.data.dao.AnswerDao;
 import com.quiz.data.entities.Answer;
 import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
-@Component
+@Service
 @RequiredArgsConstructor
 public class AnswerService {
 

@@ -21,6 +21,8 @@ import static com.quiz.data.dao.mapper.TagMapper.ID;
 public class TagDao {
     private final JdbcTemplate jdbcTemplate;
 
+    private static final String RESOURCE = "tag";
+
     private static final String TAG_BY_ID = "SELECT id, name FROM tags WHERE id = ?";
     private static final String TAG_BY_NAME = "SELECT id, name FROM tags WHERE name = ?";
     private static final String TAGS_BY_NAME = "SELECT id, name FROM tags WHERE name SIMILAR TO ?";
@@ -37,7 +39,7 @@ public class TagDao {
                     new TagMapper()
             );
         } catch (DataAccessException e) {
-            throw new DatabaseException(String.format("Find tag by id '%s' database error occurred", id));
+            throw DatabaseException.resourceSearchException(RESOURCE, "'tagId': " + id);
         }
 
         return tags.get(0);
@@ -53,7 +55,7 @@ public class TagDao {
                     new TagMapper()
             );
         } catch (DataAccessException e) {
-            throw new DatabaseException(String.format("Find tag by name '%s' database error occurred", name));
+            throw DatabaseException.resourceSearchException(RESOURCE, "'name': " + name);
         }
 
         return tags.get(0);
@@ -69,7 +71,7 @@ public class TagDao {
                     new TagMapper()
             );
         } catch (DataAccessException e) {
-            throw new DatabaseException(String.format("Find tag by name '%s' database error occurred", name));
+            throw DatabaseException.resourceSearchException(RESOURCE, "'name': " + name);
         }
 
         return tags;
@@ -94,7 +96,7 @@ public class TagDao {
                 return ps;
             }, keyHolder);
         } catch (DataAccessException e) {
-            throw new DatabaseException("Database access exception while tag insert");
+            throw DatabaseException.accessExceptionOnInsert(RESOURCE);
         }
 
         Tag tag = new Tag();

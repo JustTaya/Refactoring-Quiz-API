@@ -6,12 +6,12 @@ import com.quiz.data.entities.Answer;
 import com.quiz.data.entities.Question;
 import com.quiz.data.entities.QuestionType;
 import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
 import java.util.Collections;
 import java.util.List;
 
-@Component
+@Service
 @RequiredArgsConstructor
 public class QuestionService {
 

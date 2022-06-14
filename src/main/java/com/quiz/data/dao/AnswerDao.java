@@ -14,6 +14,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.sql.PreparedStatement;
+import java.sql.SQLException;
 import java.sql.Types;
 import java.util.List;
 import java.util.Objects;
@@ -24,6 +25,8 @@ import static com.quiz.data.dao.mapper.AnswerMapper.*;
 @RequiredArgsConstructor
 public class AnswerDao {
     private final JdbcTemplate jdbcTemplate;
+
+    private static final String RESOURCE = "achievement";
 
     public static final String IMAGES = "images";
 
@@ -42,28 +45,20 @@ public class AnswerDao {
     private static final String DELETE_ANSWER_BY_QUESTION_ID = "DELETE FROM answers WHERE question_id = ?";
 
 
-    public static final String TABLE_ANSWER = "answers";
-
     public Answer findById(int id) {
         try {
             return jdbcTemplate.queryForObject(ANSWER_FIND_BY_ID, new Object[]{id}, new AnswerMapper());
         } catch (DataAccessException e) {
-            throw new DatabaseException(String.format("Find answer by id '%s' database error occurred", id));
+            throw DatabaseException.resourceSearchException(RESOURCE, "'id': " + id);
         }
     }
 
     public List<Answer> findAnswersByQuestionId(int id) {
         try {
             return jdbcTemplate.query(ANSWER_FIND_BY_QUESTION_ID,
-                    new Object[]{id},
-                    ((resultSet, i) -> new Answer(resultSet.getInt(ID),
-                                resultSet.getInt(QUESTION_ID),
-                                resultSet.getString(TEXT),
-                                resultSet.getBoolean(CORRECT),
-                                resultSet.getInt(NEXT_ANSWER_ID),
-                                resultSet.getString("image"))));
+                    new Object[]{id}, new AnswerMapper());
         } catch (DataAccessException e) {
-            throw new DatabaseException(String.format("Find answer by id '%s' database error occurred", id));
+            throw DatabaseException.resourceSearchException(RESOURCE, "'questionId': " + id);
         }
     }
 
@@ -85,7 +80,7 @@ public class AnswerDao {
                     }
             );
         } catch (DataAccessException e) {
-            throw new DatabaseException(String.format("Find answer by id '%s' database error occurred", id));
+            throw DatabaseException.resourceSearchException(RESOURCE, "'questionId': " + id);
         }
     }
 
@@ -98,21 +93,14 @@ public class AnswerDao {
             jdbcTemplate.update(connection -> {
                 PreparedStatement ps = connection
                         .prepareStatement(INSERT_ANSWER, new String[]{ID});
-                ps.setInt(1, entity.getQuestionId());
-                ps.setString(2, entity.getText());
-                ps.setBoolean(3, entity.isCorrect());
-                ps.setString(4, entity.getImage());
-                if (entity.getNextAnswerId() == null || entity.getNextAnswerId() == 0) {
-                    ps.setNull(5, Types.INTEGER);
-                } else {
-                    ps.setInt(5, entity.getNextAnswerId());
-                }
+
+                createPreparedStatement(entity, entity.getQuestionId(), ps);
 
                 return ps;
             }, keyHolder);
 
         } catch (DataAccessException e) {
-            throw new DatabaseException("Database access exception while quiz insert");
+            throw DatabaseException.accessExceptionOnInsert(RESOURCE);
         }
 
         entity.setId(Objects.requireNonNull(keyHolder.getKey()).intValue());
@@ -127,15 +115,7 @@ public class AnswerDao {
             jdbcTemplate.update(connection -> {
                 PreparedStatement ps = connection
                         .prepareStatement(UPDATE_ANSWER, new String[]{ID});
-                ps.setInt(1, questionId);
-                ps.setString(2, entity.getText());
-                ps.setBoolean(3, entity.isCorrect());
-                ps.setString(4, entity.getImage());
-                if (entity.getNextAnswerId() == null || entity.getNextAnswerId() == 0) {
-                    ps.setNull(5, Types.INTEGER);
-                } else {
-                    ps.setInt(5, entity.getNextAnswerId());
-                }
+                createPreparedStatement(entity, questionId, ps);
                 ps.setInt(6, entity.getId());
 
                 return ps;
@@ -143,6 +123,18 @@ public class AnswerDao {
         }
 
         return entity;
+    }
+
+    private void createPreparedStatement(AnswerDto entity, int questionId, PreparedStatement ps) throws SQLException {
+        ps.setInt(1, questionId);
+        ps.setString(2, entity.getText());
+        ps.setBoolean(3, entity.isCorrect());
+        ps.setString(4, entity.getImage());
+        if (entity.getNextAnswerId() == null || entity.getNextAnswerId() == 0) {
+            ps.setNull(5, Types.INTEGER);
+        } else {
+            ps.setInt(5, entity.getNextAnswerId());
+        }
     }
 
     public void delete(AnswerDto entity) {
@@ -172,9 +164,7 @@ public class AnswerDao {
         int affectedRowsNumber = 0;
         try {
             affectedRowsNumber = jdbcTemplate.update(UPDATE_ANSWER_IMAGE, image.getBytes(), quizId);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        } catch (IOException ignored) {}
 
         return affectedRowsNumber > 0;
     }

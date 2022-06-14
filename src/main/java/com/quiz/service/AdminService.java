@@ -3,16 +3,16 @@ package com.quiz.service;
 import com.quiz.data.dao.UserDao;
 import com.quiz.data.dto.UserDto;
 import com.quiz.data.entities.User;
-import com.quiz.exceptions.EmailExistException;
+import com.quiz.exceptions.UserEmailExistException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
 import java.util.List;
 import java.util.UUID;
 
-@Component
+@Service
 @RequiredArgsConstructor
 public class AdminService {
     @Value("client.app")
@@ -25,7 +25,7 @@ public class AdminService {
     public UserDto addAdminUser(User user) {
         User userDB = userDao.findByEmail(user.getEmail());
         if (userDB != null) {
-            throw new EmailExistException("User with this email already exist");
+            throw new UserEmailExistException("email", user.getEmail());
         }
         user.setRole(user.getRole());
         user.setPassword(UUID.randomUUID().toString());

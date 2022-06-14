@@ -4,7 +4,7 @@ import com.quiz.data.dao.UserDao;
 import com.quiz.data.dto.UserDto;
 import com.quiz.data.entities.Role;
 import com.quiz.data.entities.User;
-import com.quiz.exceptions.EmailExistException;
+import com.quiz.exceptions.UserEmailExistException;
 import com.quiz.exceptions.UserNotFoundException;
 import com.quiz.exceptions.PasswordException;
 import com.quiz.security.TokenProvider;
@@ -24,7 +24,7 @@ public class AuthService {
     public UserDto register(User user) {
         User foundedUser =userDao.findByEmail(user.getEmail());
         if(foundedUser != null){
-            throw new EmailExistException("User with this email already exist");
+            throw new UserEmailExistException("email", user.getEmail());
         }
         user.setPassword(user.getPassword());
         user.setRole((Role.USER));

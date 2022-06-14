@@ -15,12 +15,12 @@ import org.springframework.stereotype.Repository;
 import java.util.Collections;
 import java.util.List;
 
-import static com.quiz.data.dao.mapper.AchievementMapper.*;
-
 @Repository
 @RequiredArgsConstructor
 public class AchievementDao {
     private final JdbcTemplate jdbcTemplate;
+
+    private static final String RESOURCE = "achievement";
 
     public static final String GET_ACHIEVEMENT_CATEGORIES = "SELECT id, name FROM achievement_categories";
     public static final String GET_ACHIEVEMENTS = "SELECT id, name, description, category_id FROM achievements";
@@ -40,16 +40,7 @@ public class AchievementDao {
     }
 
     public List<Achievement> getAchievements() {
-        List<Achievement> achievements = jdbcTemplate.query(GET_ACHIEVEMENTS, (resultSet, i) -> {
-            Achievement achievement = new Achievement();
-
-            achievement.setId(resultSet.getInt(ID));
-            achievement.setName(resultSet.getString(NAME));
-            achievement.setDescription(resultSet.getString(DESCRIPTION));
-            achievement.setCategoryId(resultSet.getInt(CATEGORY_ID));
-
-            return achievement;
-        });
+        List<Achievement> achievements = jdbcTemplate.query(GET_ACHIEVEMENTS, new AchievementMapper());
         if (achievements.isEmpty()) {
             return Collections.emptyList();
         }
@@ -57,16 +48,7 @@ public class AchievementDao {
     }
 
     public List<Achievement> getAchievementsByCategory(int categoryId) {
-        List<Achievement> achievements = jdbcTemplate.query(GET_ACHIEVEMENTS_BY_CATEGORIES, new Object[]{categoryId}, (resultSet, i) -> {
-            Achievement achievement = new Achievement();
-
-            achievement.setId(resultSet.getInt(ID));
-            achievement.setName(resultSet.getString(NAME));
-            achievement.setDescription(resultSet.getString(DESCRIPTION));
-            achievement.setCategoryId(resultSet.getInt(CATEGORY_ID));
-
-            return achievement;
-        });
+        List<Achievement> achievements = jdbcTemplate.query(GET_ACHIEVEMENTS_BY_CATEGORIES, new Object[]{categoryId}, new AchievementMapper());
         if (achievements.isEmpty()) {
             return Collections.emptyList();
         }
@@ -97,7 +79,7 @@ public class AchievementDao {
                 return null;
             }
         } catch (DataAccessException e) {
-            throw new DatabaseException(String.format("Find answer by userId '%s' and achievementId '%s' database error occured", userId, achievementId));
+            throw DatabaseException.resourceSearchException(RESOURCE, "'userId': " + userId, "'achievementId': " + achievementId);
         }
 
         return userAchievements.get(0);

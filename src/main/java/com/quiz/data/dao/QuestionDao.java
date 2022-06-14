@@ -24,6 +24,8 @@ public class QuestionDao {
     private final JdbcTemplate jdbcTemplate;
     private final AnswerDao answerDao;
 
+    private static final String RESOURCE = "question";
+
     private static final String QUESTION_FIND_BY_ID = "SELECT id, quiz_id, type, text, active FROM questions WHERE id = ?";
     private static final String QUESTION_FIND_BY_QUIZ_ID = "SELECT id, quiz_id, type, text, active FROM questions WHERE quiz_id = ?";
     private static final String QUESTION_IMAGE_BY_QUESTION_ID = "SELECT image from questions WHERE id = ?";
@@ -47,7 +49,7 @@ public class QuestionDao {
             }
 
         } catch (DataAccessException e) {
-            throw new DatabaseException(String.format("Find question by id '%s' database error occurred", id));
+            throw DatabaseException.resourceSearchException(RESOURCE, "'questionId': " + id);
         }
 
         return questions.get(0);
@@ -105,7 +107,7 @@ public class QuestionDao {
             );
 
         } catch (DataAccessException e) {
-            throw new DatabaseException("Database access exception while question insert");
+            throw DatabaseException.accessExceptionOnInsert(RESOURCE);
         }
 
         if (keyHolder.getKey() == null) return;

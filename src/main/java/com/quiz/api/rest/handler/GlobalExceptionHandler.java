@@ -21,8 +21,8 @@ public class GlobalExceptionHandler {
                 .body(new ErrorResponse("Database error", e.getMessage()));
     }
 
-    @ExceptionHandler(EmailExistException.class)
-    public ResponseEntity<ErrorResponse> emailAlreadyExists(EmailExistException e) {
+    @ExceptionHandler(UserEmailExistException.class)
+    public ResponseEntity<ErrorResponse> emailAlreadyExists(UserEmailExistException e) {
         log.debug("Exception handled", e);
         return ResponseEntity
                 .status(HttpStatus.BAD_REQUEST)
