@@ -1,6 +1,6 @@
 package com.quiz.security;
 
-import com.quiz.entities.User;
+import com.quiz.data.entities.User;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;

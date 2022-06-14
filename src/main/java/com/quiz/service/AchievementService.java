@@ -1,15 +1,15 @@
 package com.quiz.service;
 
-import com.quiz.dao.AchievementDao;
-import com.quiz.entities.Achievement;
-import com.quiz.entities.AchievementCategory;
-import com.quiz.entities.UserAchievement;
+import com.quiz.data.dao.AchievementDao;
+import com.quiz.data.entities.Achievement;
+import com.quiz.data.entities.AchievementCategory;
+import com.quiz.data.entities.UserAchievement;
 import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 
-@Component
+@Service
 @RequiredArgsConstructor
 public class AchievementService {
     private final AchievementDao achievementDao;

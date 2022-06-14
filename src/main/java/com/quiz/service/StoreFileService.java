@@ -32,9 +32,7 @@ public class StoreFileService {
         Path filePath = Paths.get(this.path + fileName);
         try {
             Files.copy(file.getInputStream(), filePath, StandardCopyOption.REPLACE_EXISTING);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        } catch (IOException ignored) {}
         return ServletUriComponentsBuilder.fromCurrentContextPath()
                 .path("/uploads/")
                 .path(fileName)

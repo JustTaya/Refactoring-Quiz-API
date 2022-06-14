@@ -1,6 +1,6 @@
 package com.quiz.config;
 
-import com.quiz.controllers.GameController;
+import com.quiz.api.rest.controllers.GameController;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.event.EventListener;
 import org.springframework.messaging.simp.stomp.StompHeaderAccessor;

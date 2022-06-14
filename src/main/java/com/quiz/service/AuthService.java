@@ -1,11 +1,11 @@
 package com.quiz.service;
 
-import com.quiz.dao.UserDao;
-import com.quiz.dto.UserDto;
-import com.quiz.entities.Role;
-import com.quiz.entities.User;
-import com.quiz.exceptions.EmailExistException;
-import com.quiz.exceptions.NotFoundException;
+import com.quiz.data.dao.UserDao;
+import com.quiz.data.dto.UserDto;
+import com.quiz.data.entities.Role;
+import com.quiz.data.entities.User;
+import com.quiz.exceptions.UserEmailExistException;
+import com.quiz.exceptions.UserNotFoundException;
 import com.quiz.exceptions.PasswordException;
 import com.quiz.security.TokenProvider;
 import lombok.RequiredArgsConstructor;
@@ -24,7 +24,7 @@ public class AuthService {
     public UserDto register(User user) {
         User foundedUser =userDao.findByEmail(user.getEmail());
         if(foundedUser != null){
-            throw new EmailExistException("User with this email already exist");
+            throw new UserEmailExistException("email", user.getEmail());
         }
         user.setPassword(user.getPassword());
         user.setRole((Role.USER));
@@ -36,7 +36,7 @@ public class AuthService {
     public String login(User user) {
         User foundedUser = userDao.findByEmail(user.getEmail());
         if (foundedUser == null) {
-            throw new NotFoundException("user", "email", user.getEmail());
+            throw new UserNotFoundException("email", user.getEmail());
         }
         if(!passwordEncoder.matches(user.getPassword(), foundedUser.getPassword())){
             throw new PasswordException();

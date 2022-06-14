@@ -1,14 +1,15 @@
 package com.quiz.service;
 
-import com.quiz.dao.AnnouncementDao;
-import com.quiz.dao.AnswerDao;
-import com.quiz.dao.UserDao;
-import com.quiz.dao.GameDao;
-import com.quiz.dto.GameAnswersDto;
-import com.quiz.dto.GameQuestionsDto;
-import com.quiz.dto.GameSessionDto;
-import com.quiz.entities.*;
+import com.quiz.data.dao.AnnouncementDao;
+import com.quiz.data.dao.AnswerDao;
+import com.quiz.data.dao.UserDao;
+import com.quiz.data.dao.GameDao;
+import com.quiz.data.dto.GameAnswersDto;
+import com.quiz.data.dto.GameQuestionsDto;
+import com.quiz.data.dto.GameSessionDto;
+import com.quiz.data.entities.*;
 
+import com.quiz.exceptions.GameSessionFullException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
@@ -56,7 +57,7 @@ public class GameService {
         GameSession currentGameSession = this.currentGames.get(gameId);
 
         if (currentGameSession.getPlayerSet().size() == this.gameDao.getUserNumberByGameId(gameId)) {
-            throw new RuntimeException("The session is already full");
+            throw new GameSessionFullException(gameId);
         }
 
         if (player.isAuthorize()) {

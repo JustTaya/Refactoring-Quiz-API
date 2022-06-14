@@ -1,16 +1,16 @@
 package com.quiz.service;
 
-import com.quiz.dao.AnswerDao;
-import com.quiz.dao.QuestionDao;
-import com.quiz.dao.QuizDao;
-import com.quiz.dto.QuestionCheckDto;
-import com.quiz.dto.QuizCheckDto;
-import com.quiz.dto.QuizDto;
-import com.quiz.dto.ModeratorCommentDto;
-import com.quiz.entities.Answer;
-import com.quiz.entities.ModeratorComment;
-import com.quiz.entities.Question;
-import com.quiz.entities.StatusType;
+import com.quiz.data.dao.AnswerDao;
+import com.quiz.data.dao.QuestionDao;
+import com.quiz.data.dao.QuizDao;
+import com.quiz.data.dto.QuestionCheckDto;
+import com.quiz.data.dto.QuizCheckDto;
+import com.quiz.data.dto.QuizDto;
+import com.quiz.data.dto.ModeratorCommentDto;
+import com.quiz.data.entities.Answer;
+import com.quiz.data.entities.ModeratorComment;
+import com.quiz.data.entities.Question;
+import com.quiz.data.entities.StatusType;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 

@@ -1,13 +1,13 @@
 package com.quiz.service;
 
-import com.quiz.dao.TagDao;
-import com.quiz.entities.Tag;
+import com.quiz.data.dao.TagDao;
+import com.quiz.data.entities.Tag;
 import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 
-@Component
+@Service
 @RequiredArgsConstructor
 public class TagService {
     private final TagDao tagDao;
